@@ -1,0 +1,36 @@
+<section class="panel">
+  <header class="head">
+    <h2>Usuarios</h2>
+    <small>Gestion de cuentas, estado y actividad</small>
+  </header>
+
+  <app-selected-action-bar [title]="'Usuario seleccionado'" [selected]="selectedUsuario" [actions]="actions"
+    [summaryTemplate]="usuarioSummary" (clearSelection)="clearSelection()"></app-selected-action-bar>
+
+  <ng-template #usuarioSummary let-usuario>
+    <p>
+      {{ usuario.nombre }} · {{ usuario.correo }} · {{ usuario.region }} · Estado: {{ usuario.estado }}
+    </p>
+  </ng-template>
+
+  <app-filters-bar [search]="search" [fields]="fields" searchPlaceholder="Buscar por nombre o correo"
+    (searchChange)="onSearch($event)" (fieldsChange)="onFieldsChange($event)"></app-filters-bar>
+
+  <app-admin-data-table [rows]="usuarios" [columns]="columns" [selected]="selectedUsuario" [rowIdentity]="rowIdentity"
+    [emptyMessage]="'No hay usuarios para este filtro.'" (selectedChange)="onSelectedChange($event)">
+    <ng-template #customCellTemplate let-row let-column="column">
+      <ng-container *ngIf="column.key === 'estado'">
+        <app-status-badge [status]="column.cell(row) + ''"></app-status-badge>
+      </ng-container>
+    </ng-template>
+  </app-admin-data-table>
+</section>
+
+<!-- Edit Modal -->
+<app-edit-modal [visible]="editVisible" [title]="isCreateMode ? 'Crear usuario' : 'Editar usuario'" [fields]="editFields" [data]="editData"
+  (save)="onEditSave($event)" (cancel)="onEditCancel()"></app-edit-modal>
+
+<!-- Confirm Delete Dialog -->
+<app-confirm-dialog [visible]="confirmVisible" [title]="confirmTitle" [message]="confirmMessage" [variant]="'danger'"
+  [icon]="'trash-outline'" [confirmLabel]="'Eliminar'" (confirm)="onConfirmDelete()"
+  (cancel)="onCancelDelete()"></app-confirm-dialog>

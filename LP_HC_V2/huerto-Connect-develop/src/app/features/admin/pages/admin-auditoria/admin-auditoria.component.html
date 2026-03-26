@@ -1,0 +1,24 @@
+<section class="panel">
+  <header class="head"><h2>Auditoria</h2><small>Trazabilidad de acciones y eventos</small></header>
+
+  <app-selected-action-bar
+    [title]="'Log seleccionado'"
+    [selected]="selectedLog"
+    [actions]="actions"
+    [summaryTemplate]="logSummary"
+    (clearSelection)="clearSelection()"
+  ></app-selected-action-bar>
+
+  <ng-template #logSummary let-log>
+    <p>{{ log.actor }} · {{ log.accion }} · {{ log.modulo }} · {{ log.fecha }} · {{ log.ip }}</p>
+  </ng-template>
+
+  <app-admin-data-table
+    [rows]="logs"
+    [columns]="columns"
+    [selected]="selectedLog"
+    [rowIdentity]="rowIdentity"
+    [emptyMessage]="'No hay logs registrados.'"
+    (selectedChange)="onSelectedChange($event)"
+  ></app-admin-data-table>
+</section>

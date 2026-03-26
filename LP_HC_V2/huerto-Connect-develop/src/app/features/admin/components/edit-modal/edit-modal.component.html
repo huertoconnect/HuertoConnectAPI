@@ -1,0 +1,59 @@
+<div class="overlay" *ngIf="visible" (click)="onOverlayClick($event)">
+    <div class="modal">
+        <header class="modal-header">
+            <div class="modal-icon">
+                <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <h3>{{ title }}</h3>
+            <button type="button" class="close-btn" (click)="cancel.emit()">
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+        </header>
+
+        <form class="modal-body" (ngSubmit)="onSave()">
+            <div class="form-grid">
+                <div *ngFor="let field of fields; trackBy: trackByKey" class="form-group"
+                    [class.full-width]="field.type === 'checkbox'">
+                    <label [for]="'field-' + field.key">{{ field.label }}</label>
+
+                    <input *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'number'"
+                        [id]="'field-' + field.key" [type]="field.type" [placeholder]="field.placeholder || ''"
+                        [ngModel]="formData[field.key]" (ngModelChange)="onFieldChange(field, $event)"
+                        (blur)="onFieldBlur(field)" [name]="field.key" [required]="field.required ?? false"
+                        class="form-control" [class.input-error]="isFieldInvalid(field)"
+                        [class.input-success]="isFieldValid(field)" />
+
+                    <select *ngIf="field.type === 'select'" [id]="'field-' + field.key"
+                        [ngModel]="formData[field.key]" (ngModelChange)="onFieldChange(field, $event)"
+                        (blur)="onFieldBlur(field)" [name]="field.key" class="form-control"
+                        [class.input-error]="isFieldInvalid(field)" [class.input-success]="isFieldValid(field)">
+                        <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
+                    </select>
+
+                    <label *ngIf="field.type === 'checkbox'" class="checkbox-wrap">
+                        <input type="checkbox" [ngModel]="formData[field.key]"
+                            (ngModelChange)="onFieldChange(field, $event)" (blur)="onFieldBlur(field)"
+                            [name]="field.key" />
+                        <span class="checkmark"></span>
+                        {{ field.label }}
+                    </label>
+
+                    <p class="field-error" *ngIf="getFieldError(field) as fieldError">
+                        {{ fieldError }}
+                    </p>
+                </div>
+            </div>
+
+            <footer class="modal-footer">
+                <button type="button" class="btn-cancel" (click)="cancel.emit()">
+                    <ion-icon name="close-outline"></ion-icon>
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-save" [disabled]="!isFormValid()">
+                    <ion-icon name="save-outline"></ion-icon>
+                    Guardar cambios
+                </button>
+            </footer>
+        </form>
+    </div>
+</div>

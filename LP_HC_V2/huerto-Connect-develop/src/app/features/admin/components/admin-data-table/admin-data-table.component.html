@@ -1,0 +1,33 @@
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th *ngFor="let column of columns; trackBy: trackByColumn" [style.width]="column.width || null"
+          [style.text-align]="column.align || 'left'">
+          {{ column.header }}
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let row of rows; trackBy: trackByRow" (click)="selectRow(row)" (keydown)="onRowKeydown($event, row)"
+        [class.selected]="isSelected(row)" [attr.aria-selected]="isSelected(row)" tabindex="0">
+        <td *ngFor="let column of columns; trackBy: trackByColumn" [style.text-align]="column.align || 'left'">
+          <ng-container *ngIf="column.isCustom; else textCell">
+            <ng-container
+              *ngTemplateOutlet="customCellTemplate || null; context: { $implicit: row, column: column }"></ng-container>
+          </ng-container>
+          <ng-template #textCell>
+            {{ column.cell ? column.cell(row) : '' }}
+          </ng-template>
+        </td>
+      </tr>
+
+      <tr *ngIf="rows.length === 0">
+        <td class="empty" [attr.colspan]="columns.length">
+          {{ emptyMessage }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

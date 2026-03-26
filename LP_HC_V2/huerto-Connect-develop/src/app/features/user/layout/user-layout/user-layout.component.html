@@ -1,0 +1,101 @@
+<div class="user-shell" [class.sidebar-open]="sidebarOpen">
+  <app-confirm-dialog
+    [visible]="logoutConfirmVisible"
+    title="Cerrar sesión"
+    message="¿Seguro que deseas cerrar sesión ahora?"
+    icon="log-out-outline"
+    variant="warning"
+    confirmLabel="Sí, cerrar sesión"
+    cancelLabel="Cancelar"
+    (confirm)="confirmLogout()"
+    (cancel)="cancelLogout()">
+  </app-confirm-dialog>
+
+  <button
+    type="button"
+    class="sidebar-backdrop"
+    aria-label="Cerrar panel lateral"
+    (click)="closeSidebar()">
+  </button>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"><ion-icon name="leaf-outline"></ion-icon></div>
+      <div class="brand-meta">
+        <strong>Huerto Connect</strong>
+        <span>Panel de productor inteligente</span>
+      </div>
+    </div>
+
+    <div class="profile" *ngIf="currentUser$ | async as user">
+      <div class="avatar">
+        <img
+          [src]="user.profile_picture || defaultAvatar"
+          [alt]="'Foto de ' + user.name"
+          (error)="onAvatarError($event)" />
+      </div>
+      <div class="meta">
+        <strong>{{ user.name }}</strong>
+        <span>{{ getRoleName(user.role) }}</span>
+      </div>
+    </div>
+
+    <div class="profile-status">
+      <ion-icon name="pulse-outline"></ion-icon>
+      <span>Monitoreo activo</span>
+    </div>
+
+    <nav class="menu">
+      <a
+        *ngFor="let item of navItems"
+        class="menu-item"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        #rla="routerLinkActive"
+        [attr.aria-current]="rla.isActive ? 'page' : null"
+        (click)="closeSidebar()">
+        <ion-icon [name]="item.icon" aria-hidden="true"></ion-icon>
+        <div class="menu-meta">
+          <strong>{{ item.label }}</strong>
+          <span>{{ item.description }}</span>
+        </div>
+        <i class="active-dot" *ngIf="rla.isActive" aria-hidden="true"></i>
+      </a>
+    </nav>
+
+    <article class="sidebar-card">
+      <strong>Consejo rapido</strong>
+      <p>Revisa primero alertas criticas y luego ajusta riego en huertos con menor salud.</p>
+      <small>{{ todayLabel }}</small>
+    </article>
+
+    <button type="button" class="menu-item logout" (click)="requestLogout()">
+      <ion-icon name="log-out-outline"></ion-icon>
+      <span>Cerrar sesión</span>
+    </button>
+  </aside>
+
+  <section class="workspace">
+    <header class="topbar">
+      <button type="button" class="menu-toggle" aria-label="Abrir menú lateral" (click)="toggleSidebar()">
+        <ion-icon name="menu-outline"></ion-icon>
+      </button>
+
+      <div class="topbar-copy">
+        <h1>Panel de usuario</h1>
+        <p>Monitorea tus huertos, alertas y recomendaciones desde un solo lugar.</p>
+      </div>
+
+      <div class="topbar-chips">
+        <div class="chip">
+          <ion-icon name="calendar-clear-outline"></ion-icon>
+          <span>{{ shortDateLabel }}</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </section>
+</div>

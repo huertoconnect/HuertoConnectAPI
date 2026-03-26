@@ -1,0 +1,40 @@
+<section class="panel">
+  <header class="head">
+    <h2>Huertos</h2>
+    <small>Control operativo y salud por huerto</small>
+  </header>
+
+  <app-selected-action-bar [title]="'Huerto seleccionado'" [selected]="selectedHuerto" [actions]="actions"
+    [summaryTemplate]="huertoSummary" (clearSelection)="clearSelection()"></app-selected-action-bar>
+
+  <ng-template #huertoSummary let-huerto>
+    <p>
+      {{ huerto.nombre }} · {{ huerto.usuario }} · {{ huerto.municipio }} · Estado:
+      {{ huerto.estado }} · Salud: {{ huerto.salud }}%
+    </p>
+  </ng-template>
+
+  <app-admin-data-table [rows]="huertos" [columns]="columns" [selected]="selectedHuerto" [rowIdentity]="rowIdentity"
+    [emptyMessage]="'No hay huertos disponibles.'" (selectedChange)="onSelectedChange($event)">
+    <ng-template #customCellTemplate let-row let-column="column">
+      <ng-container *ngIf="column.key === 'estado'">
+        <app-status-badge [status]="column.cell(row) + ''"></app-status-badge>
+      </ng-container>
+      <ng-container *ngIf="column.key === 'salud'">
+        <div class="salud-bar-wrapper">
+          <span class="salud-val">{{ row.salud }}%</span>
+          <div class="salud-bar"><i [style.width.%]="row.salud"></i></div>
+        </div>
+      </ng-container>
+    </ng-template>
+  </app-admin-data-table>
+</section>
+
+<!-- Edit Modal -->
+<app-edit-modal [visible]="editVisible" [title]="isCreateMode ? 'Crear huerto' : 'Editar huerto'" [fields]="editFields" [data]="editData"
+  (save)="onEditSave($event)" (cancel)="onEditCancel()"></app-edit-modal>
+
+<!-- Confirm Delete Dialog -->
+<app-confirm-dialog [visible]="confirmVisible" [title]="confirmTitle" [message]="confirmMessage" [variant]="'danger'"
+  [icon]="'trash-outline'" [confirmLabel]="'Eliminar'" (confirm)="onConfirmDelete()"
+  (cancel)="onCancelDelete()"></app-confirm-dialog>

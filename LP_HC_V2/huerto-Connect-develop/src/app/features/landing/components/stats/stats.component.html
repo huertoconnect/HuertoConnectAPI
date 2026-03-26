@@ -1,0 +1,26 @@
+<section class="stats-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="badge">Resultados Comprobados</span>
+            <h2>Datos que Transforman</h2>
+            <p class="section-subtitle">Resultados reales de nuestros clientes en los últimos 12 meses</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card" *ngFor="let stat of stats">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                        <polyline points="17 6 23 6 23 12"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-value">{{ stat.value }} <span class="stat-main-label" *ngIf="stat.value.length < 5">{{
+                        stat.label }}</span></div>
+                <div class="stat-main-label-block" *ngIf="stat.value.length >= 5">{{ stat.label }}</div>
+
+                <p class="stat-sub">{{ stat.sub }}</p>
+            </div>
+        </div>
+    </div>
+</section>

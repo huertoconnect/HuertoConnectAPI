@@ -1,0 +1,86 @@
+<section class="faq-section leaf-fall-section" id="faq">
+    <!-- Background decoration -->
+    <div class="bg-decoration">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <div class="leaf-atmosphere" aria-hidden="true">
+        <div class="leaf-swarm">
+            <span class="floating-leaf" *ngFor="let leaf of leaves" [style.left.%]="leaf.x" [style.top.%]="leaf.y"
+                [style.fontSize.px]="leaf.size" [style.opacity]="leaf.opacity" [style.--leaf-delay]="leaf.delay + 's'"
+                [style.--leaf-duration]="leaf.duration + 's'" [style.--leaf-drift-x]="leaf.driftX + 'px'"
+                [style.--leaf-rotation]="leaf.rotate + 'deg'">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                </svg>
+            </span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section-header" appScrollReveal>
+            <span class="badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                FAQ
+            </span>
+            <h2>Preguntas Frecuentes</h2>
+            <p class="section-subtitle">Todo lo que necesitas saber sobre Huerto Connect</p>
+        </div>
+
+        <div class="faq-wrapper" appScrollReveal [revealDelay]="200">
+            <div class="faq-container">
+                <div class="faq-item" *ngFor="let item of faqs; let i = index" [class.active]="item.open"
+                    [attr.data-index]="i">
+
+                    <button class="faq-header" (click)="toggle(i)">
+                        <div class="question-content">
+                            <span class="question-number">{{ (i + 1).toString().padStart(2, '0') }}</span>
+                            <h3>{{ item.question }}</h3>
+                        </div>
+                        <span class="toggle-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19" class="vertical" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                        </span>
+                    </button>
+
+                    <div class="faq-body">
+                        <div class="answer-content">
+                            <p>{{ item.answer }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side decoration -->
+            <div class="side-decoration">
+                <div class="deco-card">
+                    <div class="deco-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                    </div>
+                    <h4>¿Más preguntas?</h4>
+                    <p>Estamos aquí para ayudarte</p>
+                    <a href="#contact" class="contact-btn">
+                        Contáctanos
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

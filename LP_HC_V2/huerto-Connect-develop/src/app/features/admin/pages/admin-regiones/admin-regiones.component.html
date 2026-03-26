@@ -1,0 +1,33 @@
+<div class="page-grid">
+  <app-map-veracruz></app-map-veracruz>
+
+  <section class="panel">
+    <header class="head">
+      <h2>Regiones activas</h2>
+      <small>Usuarios, huertos y actividad por region</small>
+    </header>
+
+    <app-selected-action-bar [title]="'Region seleccionada'" [selected]="selectedRegion" [actions]="actions"
+      [summaryTemplate]="regionSummary" (clearSelection)="clearSelection()"></app-selected-action-bar>
+
+    <ng-template #regionSummary let-region>
+      <p>
+        {{ region.nombre }} · Usuarios: {{ region.usuarios }} · Huertos: {{ region.huertos }} ·
+        Detecciones: {{ region.detecciones }} · Actividad: {{ region.actividad }}
+      </p>
+    </ng-template>
+
+    <app-admin-data-table [rows]="regiones" [columns]="columns" [selected]="selectedRegion" [rowIdentity]="rowIdentity"
+      [emptyMessage]="'No hay regiones activas para mostrar.'"
+      (selectedChange)="onSelectedChange($event)"></app-admin-data-table>
+  </section>
+</div>
+
+<!-- Edit Modal -->
+<app-edit-modal [visible]="editVisible" [title]="isCreateMode ? 'Crear región' : 'Editar región'" [fields]="editFields" [data]="editData"
+  (save)="onEditSave($event)" (cancel)="onEditCancel()"></app-edit-modal>
+
+<!-- Confirm Dialog -->
+<app-confirm-dialog [visible]="confirmVisible" [title]="confirmTitle" [message]="confirmMessage"
+  [variant]="confirmVariant" [icon]="confirmIcon" [confirmLabel]="confirmLabel" (confirm)="onConfirm()"
+  (cancel)="onCancelConfirm()"></app-confirm-dialog>

@@ -1,0 +1,19 @@
+<article class="kpi-card">
+  <div class="kpi-header">
+    <div class="kpi-title-block">
+      <h4>{{ label }}</h4>
+      <div class="kpi-main-val">
+        <strong>{{ value }}</strong>
+        <small [class.up]="tone === 'up'" [class.down]="tone === 'down'" [class.steady]="tone === 'steady'">
+          <ion-icon
+            [name]="tone === 'up' ? 'trending-up-outline' : (tone === 'down' ? 'trending-down-outline' : 'remove-outline')"></ion-icon>
+          {{ delta }}
+        </small>
+      </div>
+    </div>
+    <div class="icon" [class]="tone"><ion-icon [name]="icon"></ion-icon></div>
+  </div>
+  <div class="spark">
+    <canvas #chartCanvas></canvas>
+  </div>
+</article>

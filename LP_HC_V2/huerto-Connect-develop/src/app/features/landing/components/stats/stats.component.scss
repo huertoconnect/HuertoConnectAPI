@@ -1,0 +1,91 @@
+.stats-section {
+    padding: 100px 0;
+    background-color: var(--color-secondary);
+    color: white;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+
+    .badge {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--color-primary);
+        padding: 6px 16px;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        display: inline-block;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h2 {
+        color: white;
+        margin-bottom: 15px;
+    }
+
+    .section-subtitle {
+        color: rgba(255, 255, 255, 0.7);
+    }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 992px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    /* Glassmorphism */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-icon {
+        color: var(--color-primary);
+        margin-bottom: 20px;
+
+        svg {
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: white;
+
+        .stat-main-label {
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-left: 10px;
+        }
+    }
+
+    .stat-main-label-block {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .stat-sub {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+    }
+}

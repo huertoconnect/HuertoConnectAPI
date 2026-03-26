@@ -1,0 +1,91 @@
+<section class="features-section" id="services">
+    <div class="container overflow-hidden">
+        <div class="section-header" appScrollReveal>
+            <span class="badge-pill">Servicios</span>
+            <h2>Todo lo que Necesitas</h2>
+            <p>Herramientas inteligentes para potenciar tu cultivo desde el primer día.</p>
+        </div>
+
+        <div class="bento-grid" #scrollContainer (mousedown)="onMouseDown($event)" (mouseleave)="onMouseLeave()"
+            (mouseup)="onMouseUp()" (mousemove)="onMouseMove($event)">
+
+            <div class="bento-card" *ngFor="let feature of features" [style.--card-gradient]="feature.color"
+                [style.--card-color-glow]="feature.color">
+
+                <div class="card-bg-glow"></div>
+
+                <div class="card-content">
+                    <div class="icon-box">
+                        <!-- Switch for Icons -->
+                        <ng-container [ngSwitch]="feature.icon">
+                            <!-- Brain/IA -->
+                            <svg *ngSwitchCase="'brain'" viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 8c-2.5 0-4 1.5-4 3.5 0 1.5 1 2.5 1 4s-1 3-1 4.5c0 2 2 3.5 4 3.5"></path>
+                                <path d="M22 8c2.5 0 4 1.5 4 3.5 0 1.5-1 2.5-1 4s1 3 1 4.5c0 2-2 3.5-4 3.5"></path>
+                                <path d="M10 8c0-2 2-4 6-4s6 2 6 4"></path>
+                                <path d="M10 23.5c0 2 2 4.5 6 4.5s6-2.5 6-4.5"></path>
+                                <path d="M16 4v6"></path>
+                                <text x="16" y="19" text-anchor="middle" fill="currentColor" stroke="none" font-size="7"
+                                    font-weight="bold" font-family="Arial, sans-serif">IA</text>
+                            </svg>
+
+                            <!-- Leaf -->
+                            <svg *ngSwitchCase="'leaf'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z">
+                                </path>
+                                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                            </svg>
+
+                            <!-- Calendar -->
+                            <svg *ngSwitchCase="'calendar'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                                <path d="m9 16 2 2 4-4"></path>
+                            </svg>
+
+                            <!-- Location -->
+                            <svg *ngSwitchCase="'location'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+
+                            <!-- Users -->
+                            <svg *ngSwitchCase="'users'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+
+                            <!-- Support/Headphones -->
+                            <svg *ngSwitchCase="'support'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                                <path
+                                    d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z">
+                                </path>
+                            </svg>
+
+                            <!-- Default -->
+                            <svg *ngSwitchDefault viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                        </ng-container>
+                    </div>
+
+                    <h3>{{ feature.title }}</h3>
+                    <p>{{ feature.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

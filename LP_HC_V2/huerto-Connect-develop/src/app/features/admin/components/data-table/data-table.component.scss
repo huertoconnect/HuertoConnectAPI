@@ -1,0 +1,26 @@
+.table-wrap {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px 6px;
+  font-size: 12px;
+}
+
+th {
+  color: var(--admin-text-dim);
+  font-weight: 500;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+td {
+  border-bottom: 1px solid var(--admin-line-soft);
+}
+

@@ -1,0 +1,131 @@
+<div class="admin-shell">
+  <app-toast-notification></app-toast-notification>
+  <app-confirm-dialog
+    [visible]="logoutConfirmVisible"
+    title="Cerrar sesión"
+    message="¿Seguro que deseas cerrar sesión ahora?"
+    icon="log-out-outline"
+    variant="warning"
+    confirmLabel="Sí, cerrar sesión"
+    cancelLabel="Cancelar"
+    (confirm)="confirmLogout()"
+    (cancel)="cancelLogout()">
+  </app-confirm-dialog>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"><ion-icon name="leaf-outline"></ion-icon></div>
+      <div class="meta">
+        <strong>Huerto Connect</strong>
+        <span>AI Command Center</span>
+      </div>
+    </div>
+
+    <div class="sidebar-profile" *ngIf="currentUser$ | async as user">
+      <div class="avatar">
+        <img
+          [src]="user.profile_picture || defaultAvatar"
+          [alt]="'Foto de ' + user.name"
+          (error)="onAvatarError($event)" />
+      </div>
+      <div class="profile-info">
+        <strong>{{ user.name }}</strong>
+        <span>{{ getRoleName(user.role) }}</span>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a *ngFor="let item of visibleNavItems" class="menu-item" [routerLink]="item.route" routerLinkActive="active"
+        #rla="routerLinkActive" [style.--item-accent]="item.accent" [style.--item-accent-light]="item.accentLight"
+        [attr.aria-current]="rla.isActive ? 'page' : null">
+        <ion-icon [name]="item.icon"></ion-icon>
+        <span>{{ item.label }}</span>
+        <i class="active-dot" *ngIf="rla.isActive" aria-hidden="true"></i>
+      </a>
+
+      <button type="button" class="menu-item menu-logout" (click)="requestLogout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </nav>
+  </aside>
+
+  <section class="workspace">
+    <header class="topbar">
+      <label class="search">
+        <ion-icon name="search-outline"></ion-icon>
+        <input type="text" placeholder="Buscar usuarios, huertos, plagas o reportes..." />
+      </label>
+
+      <div class="top-actions">
+        <button *ngIf="isAdmin" type="button" class="icon-btn" routerLink="/admin/configuracion" aria-label="Configuracion">
+          <ion-icon name="settings-outline"></ion-icon>
+        </button>
+        <div class="notifications" (click)="$event.stopPropagation()">
+          <button type="button" class="icon-btn notifications-btn" aria-label="Notificaciones" (click)="toggleNotifications($event)">
+            <ion-icon name="notifications-outline"></ion-icon>
+            <i class="notif-badge" *ngIf="unreadCount > 0">{{ unreadCount > 99 ? '99+' : unreadCount }}</i>
+          </button>
+
+          <section class="notifications-panel" *ngIf="notificationsOpen">
+            <header class="notifications-head" *ngIf="notificationsSummary$ | async as summary">
+              <div class="notifications-head-main">
+                <strong>Notificaciones</strong>
+                <small>Inbox personal</small>
+                <div class="summary-line">
+                  <span>Totales: {{ summary.total }}</span>
+                  <span>No leidas: {{ summary.no_leidas }}</span>
+                  <span>Leidas: {{ summary.leidas }}</span>
+                </div>
+                <div class="summary-line types" *ngIf="summary.por_tipo | keyvalue as typeEntries">
+                  <span *ngFor="let entry of typeEntries">{{ entry.key }} {{ entry.value }}</span>
+                </div>
+              </div>
+              <div class="notifications-actions">
+                <button type="button" class="refresh" (click)="refreshNotifications()">
+                  <ion-icon name="refresh-outline"></ion-icon>
+                  <span>Actualizar</span>
+                </button>
+                <button type="button" class="mark-read" (click)="markAllAsRead()">
+                  <ion-icon name="checkmark-done-outline"></ion-icon>
+                  <span>Marcar leidas</span>
+                </button>
+              </div>
+            </header>
+
+            <div class="notifications-list" *ngIf="notifications$ | async as notifications">
+              <button
+                type="button"
+                class="notification-item"
+                *ngFor="let notification of notifications"
+                [class.unread]="!notification.leida"
+                (click)="onNotificationClick(notification)">
+                <div class="notification-icon" [class.error]="notification.tipo === 'error'" [class.warn]="notification.tipo === 'alerta' || notification.tipo === 'warning'" [class.success]="notification.tipo === 'exito'">
+                  <ion-icon [name]="getNotificationIcon(notification.tipo)"></ion-icon>
+                </div>
+                <div class="notification-copy">
+                  <div class="notification-topline">
+                    <strong>{{ notification.titulo }}</strong>
+                    <span class="state-pill" *ngIf="!notification.leida">Nueva</span>
+                  </div>
+                  <p>{{ notification.mensaje }}</p>
+                  <small>{{ formatNotificationDate(notification.fecha) }}</small>
+                </div>
+                <ion-icon class="go-icon" name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+              </button>
+
+              <div class="notifications-empty" *ngIf="notifications.length === 0">
+                <ion-icon name="notifications-off-outline"></ion-icon>
+                <strong>Bandeja al día</strong>
+                <p>No tienes notificaciones no leidas por ahora.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </section>
+</div>

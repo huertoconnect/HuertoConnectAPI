@@ -1,0 +1,19 @@
+<div class="overlay" *ngIf="visible" (click)="onOverlayClick($event)">
+  <div class="dialog" [class]="variant">
+    <div class="dialog-icon">
+      <ion-icon [name]="icon"></ion-icon>
+    </div>
+    <h4>{{ title }}</h4>
+    <p>{{ message }}</p>
+    <div class="actions">
+      <button type="button" class="btn-cancel" (click)="cancel.emit()">
+        <ion-icon name="close-outline"></ion-icon>
+        {{ cancelLabel }}
+      </button>
+      <button type="button" class="btn-confirm" [class]="'btn-confirm ' + variant" (click)="confirm.emit()">
+        <ion-icon name="checkmark-outline"></ion-icon>
+        {{ confirmLabel }}
+      </button>
+    </div>
+  </div>
+</div>

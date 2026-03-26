@@ -1,0 +1,244 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.map-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--admin-panel-border);
+  border-radius: 16px;
+  background: var(--admin-panel-bg);
+  backdrop-filter: blur(12px);
+  padding: 16px;
+  box-shadow: var(--admin-glass-shadow);
+  transition: transform 300ms ease, box-shadow 300ms ease;
+  max-height: 520px;
+}
+
+header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+header small {
+  color: var(--color-secondary-dark);
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.filters {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+label {
+  border: 1px solid rgba(140, 183, 155, 0.3);
+  border-radius: 999px;
+  background: var(--admin-surface);
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  transition: all 0.2s ease;
+}
+
+label:focus-within {
+  border-color: var(--color-green-deep);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(35, 83, 71, 0.15);
+}
+
+label span {
+  color: var(--color-secondary-dark);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+select {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.map-view {
+  min-height: 220px;
+  flex: 0 0 calc(50% - 10px);
+  border-radius: 12px;
+  margin-top: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(140, 183, 155, 0.2);
+  box-shadow: 0 4px 16px rgba(5, 31, 32, 0.05);
+
+  /* Leaflet SaaS Overrides */
+  ::ng-deep .leaflet-tile-pane {
+    filter: sepia(0.2) hue-rotate(90deg) saturate(0.5) brightness(0.95);
+  }
+
+  ::ng-deep .leaflet-control-zoom {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    margin: 16px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    a {
+      background: rgba(255, 255, 255, 0.75) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--color-primary-dark) !important;
+      transition: background 0.3s, color 0.3s, transform 0.2s;
+      width: 38px !important;
+      height: 38px !important;
+      line-height: 38px !important;
+      border: 1px solid rgba(255, 255, 255, 0.4) !important;
+      border-radius: 50% !important;
+      box-shadow: 0 4px 12px rgba(5, 31, 32, 0.15) !important;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.95) !important;
+        transform: translateY(-2px);
+        color: var(--color-green-deep) !important;
+      }
+    }
+  }
+
+  ::ng-deep .leaflet-interactive {
+    transition: stroke-width 0.3s, fill-opacity 0.3s;
+
+    &:hover {
+      stroke-width: 4px;
+      fill-opacity: 0.8 !important;
+    }
+  }
+
+  ::ng-deep .leaflet-popup-content-wrapper {
+    background: #051F20;
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(5, 31, 32, 0.2);
+    padding: 2px;
+  }
+
+  ::ng-deep .leaflet-popup-tip {
+    background: #051F20;
+  }
+
+  ::ng-deep .leaflet-popup-content {
+    margin: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+
+    strong {
+      display: block;
+      font-size: 14px;
+      color: #DBF0DD;
+      margin-bottom: 6px;
+      border-bottom: 1px solid rgba(140, 183, 155, 0.2);
+      padding-bottom: 4px;
+    }
+  }
+}
+
+.summary {
+  flex: 1;
+  margin-top: 12px;
+  display: grid;
+  gap: 6px;
+  overflow-y: auto;
+  padding-right: 4px;
+
+  /* Scroll Invisible Core */
+  scrollbar-width: none;
+
+  /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Edge, Safari */
+  }
+}
+
+.item {
+  border: 1px solid rgba(140, 183, 155, 0.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(5, 31, 32, 0.05);
+    background: #fff;
+  }
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-header strong {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.item-header .location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-secondary-dark);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.crop-name {
+  color: var(--color-secondary-dark);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.item small {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-salud {
+  background: rgba(140, 183, 155, 0.15);
+  color: var(--color-green-deep);
+}
+
+.badge-alert {
+  background: rgba(140, 183, 155, 0.1);
+  color: var(--color-green-soft);
+}
+
+.badge-alert.danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}

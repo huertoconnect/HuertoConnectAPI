@@ -1,0 +1,14 @@
+<div class="filters">
+  <label class="search">
+    <ion-icon name="search-outline"></ion-icon>
+    <input [ngModel]="search" (ngModelChange)="onSearch($event)" [placeholder]="searchPlaceholder" />
+  </label>
+
+  <label class="select" *ngFor="let field of fields">
+    <span>{{ field.label }}</span>
+    <select [ngModel]="field.value" (ngModelChange)="onFieldChange(field.id, $event)">
+      <option value="">Todos</option>
+      <option *ngFor="let option of field.options" [value]="option">{{ option }}</option>
+    </select>
+  </label>
+</div>

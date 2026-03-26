@@ -1,0 +1,99 @@
+<div class="dashboard" *ngIf="vm$ | async as vm">
+  <section class="kpi-grid panel">
+    <app-kpi-card *ngFor="let card of kpis; trackBy: trackByIndex" [label]="card.label" [value]="card.value"
+      [delta]="card.delta" [tone]="card.tone" [icon]="card.icon" [spark]="card.spark"
+      [chartType]="card.chartType || 'line'"></app-kpi-card>
+  </section>
+
+  <section class="row row-map" *ngIf="vm.currentFilter === 'all' || vm.currentFilter === 'map'">
+    <app-map-veracruz></app-map-veracruz>
+
+    <article class="panel">
+      <header class="panel-head">
+        <h3>Alertas activas</h3>
+      </header>
+      <div class="stack">
+        <div *ngFor="let alert of vm.alertas" class="list-card">
+          <div>
+            <strong>{{ alert.titulo }}</strong>
+            <span>{{ alert.region }} · {{ alert.fecha }}</span>
+          </div>
+          <app-status-badge [status]="alert.severidad"></app-status-badge>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="row row-two" *ngIf="vm.currentFilter === 'all' || vm.currentFilter === 'ai'">
+    <article class="panel">
+      <header class="panel-head">
+        <h3>Deteccion de plagas IA</h3>
+      </header>
+      <div class="stack">
+        <div *ngFor="let item of vm.plagas" class="list-card">
+          <div>
+            <strong>{{ item.plaga }} ({{ item.confianza }}%)</strong>
+            <span>{{ item.cultivo }} · {{ item.ubicacion }} · {{ item.fecha }}</span>
+          </div>
+          <app-status-badge [status]="item.severidad"></app-status-badge>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <header class="panel-head">
+        <h3>Actividad chatbot</h3>
+      </header>
+      <div class="topic-list">
+        <div *ngFor="let topic of vm.chatMetricas" class="topic-row">
+          <div class="topic-meta">
+            <strong>{{ topic.tema }}</strong>
+            <span>{{ topic.total }} consultas</span>
+          </div>
+          <div class="bar"><i [style.width.%]="topic.porcentaje"></i></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="row row-two" *ngIf="vm.currentFilter === 'all' || vm.currentFilter === 'stats'">
+    <article class="panel">
+      <header class="panel-head">
+        <h3>Crecimiento de usuarios</h3>
+      </header>
+      <div class="line-bars-container">
+        <app-mini-chart [data]="vm.growthSeries" color="primary"></app-mini-chart>
+      </div>
+    </article>
+
+    <article class="panel">
+      <header class="panel-head">
+        <h3>Tendencia de plagas</h3>
+      </header>
+      <div class="line-bars-container danger">
+        <app-mini-chart [data]="vm.plagaSeries" color="danger"></app-mini-chart>
+      </div>
+    </article>
+  </section>
+
+  <!-- Floating Filter Menu -->
+  <div class="fab-container">
+    <div class="fab-menu" *ngIf="isMenuOpen">
+      <button (click)="setFilter('all')" [class.active]="vm.currentFilter === 'all'">
+        <ion-icon name="apps-outline"></ion-icon> Dashboard Completo
+      </button>
+      <button (click)="setFilter('map')" [class.active]="vm.currentFilter === 'map'">
+        <ion-icon name="map-outline"></ion-icon> Mapa y Alertas
+      </button>
+      <button (click)="setFilter('ai')" [class.active]="vm.currentFilter === 'ai'">
+        <ion-icon name="hardware-chip-outline"></ion-icon> Detección IA y Chatbot
+      </button>
+      <button (click)="setFilter('stats')" [class.active]="vm.currentFilter === 'stats'">
+        <ion-icon name="stats-chart-outline"></ion-icon> Gráficas y Crecimiento
+      </button>
+    </div>
+    <button class="fab-btn" [class.active]="isMenuOpen" (click)="toggleMenu()" aria-label="Filtros del Dashboard">
+      <ion-icon name="options-outline"></ion-icon>
+    </button>
+  </div>
+</div>

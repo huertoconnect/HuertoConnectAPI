@@ -1,0 +1,53 @@
+.panel {
+  border: 1px solid var(--admin-panel-border);
+  border-radius: 20px;
+  background: var(--admin-panel-bg);
+  backdrop-filter: blur(12px);
+  padding: 24px;
+  box-shadow: var(--admin-glass-shadow);
+}
+
+.head {
+  margin-bottom: 24px;
+}
+
+.head h2 {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.head small {
+  color: var(--color-secondary-dark);
+  font-weight: 500;
+}
+
+.salud-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.salud-val {
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 32px;
+  color: var(--color-primary-dark);
+}
+
+.salud-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 100px;
+  background: rgba(23, 56, 49, 0.1);
+  overflow: hidden;
+  max-width: 100px;
+}
+
+.salud-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--color-green-soft), var(--color-green-deep));
+  transition: width 0.4s ease;
+}

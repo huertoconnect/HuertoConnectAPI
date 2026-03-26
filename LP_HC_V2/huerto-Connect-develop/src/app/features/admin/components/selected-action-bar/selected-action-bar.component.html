@@ -1,0 +1,11 @@
+<section class="selected-bar">
+  <div class="summary"></div>
+
+  <div class="actions">
+    <button *ngFor="let action of actions; trackBy: trackByAction" type="button" [class]="action.variant || 'ghost'"
+      [disabled]="isDisabled(action)" (click)="run(action)">
+      <ion-icon *ngIf="action.icon" [name]="action.icon"></ion-icon>
+      <span>{{ action.label }}</span>
+    </button>
+  </div>
+</section>

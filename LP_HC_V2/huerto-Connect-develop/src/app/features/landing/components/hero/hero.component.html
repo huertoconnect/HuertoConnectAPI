@@ -1,0 +1,54 @@
+<section class="hero-section" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="hero-aurora aurora-a" aria-hidden="true"></div>
+    <div class="hero-aurora aurora-b" aria-hidden="true"></div>
+
+    <div class="container hero-content">
+        <div class="hero-text">
+            <div class="badge">{{ badge }}</div>
+            <h1>{{ title }}<br> <span class="highlight">{{ highlight }}</span></h1>
+            <p class="subtitle">{{ subtitle }}</p>
+
+            <div class="cta-group">
+                <a href="#about" class="btn btn-primary" (click)="scrollToAbout($event)">{{ ctaPrimary }}</a>
+                <a href="#process" class="btn btn-outline">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    {{ ctaSecondary }}
+                </a>
+            </div>
+
+            <div class="hero-highlights">
+                <span>IA aplicada al campo</span>
+                <span>Planes accionables</span>
+                <span>Soporte continuo</span>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card" *ngFor="let stat of stats">
+                    <div class="stat-value">{{ stat.value }}</div>
+                    <div class="stat-label">{{ stat.label }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <div class="image-shell">
+                <div class="img-placeholder" [style.background-image]="'url(' + backgroundImage + ')'"></div>
+
+                <div class="floating-chip chip-top">
+                    <span class="chip-value">+34%</span>
+                    <span class="chip-label">Rendimiento promedio</span>
+                </div>
+
+                <div class="floating-chip chip-bottom">
+                    <span class="chip-value">-27%</span>
+                    <span class="chip-label">Uso de agua</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

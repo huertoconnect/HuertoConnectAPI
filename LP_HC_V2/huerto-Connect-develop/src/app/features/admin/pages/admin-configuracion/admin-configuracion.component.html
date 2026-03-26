@@ -1,0 +1,124 @@
+<div class="config-shell" *ngIf="!loading; else loadingTemplate">
+  <section class="panel account-panel">
+    <header class="panel-head">
+      <div>
+        <h2>Configuracion de cuenta</h2>
+        <small>Ajusta la información principal de tu cuenta.</small>
+      </div>
+      <button type="button" class="save-btn" [disabled]="savingAccount" (click)="saveAccount()">
+        <ion-icon name="save-outline"></ion-icon>
+        <span>{{ savingAccount ? 'Guardando...' : 'Guardar cambios' }}</span>
+      </button>
+    </header>
+
+    <form class="account-form" [formGroup]="accountForm" (ngSubmit)="saveAccount()">
+      <label>
+        <span>Nombre</span>
+        <input type="text" formControlName="nombre" placeholder="Nombre" />
+      </label>
+
+      <label>
+        <span>Apellidos</span>
+        <input type="text" formControlName="apellidos" placeholder="Apellidos" />
+      </label>
+
+      <label>
+        <span>Correo</span>
+        <input type="email" formControlName="email" placeholder="correo@dominio.com" />
+      </label>
+
+      <label>
+        <span>Region</span>
+        <select formControlName="regionId">
+          <option value="">Sin region asignada</option>
+          <option *ngFor="let region of regions" [value]="region.id">{{ region.nombre }}</option>
+        </select>
+      </label>
+    </form>
+  </section>
+
+  <section class="panel preferences-panel">
+    <header class="panel-head">
+      <div>
+        <h3>Centro de notificaciones</h3>
+        <small>Resumen y estado de tu bandeja personal.</small>
+      </div>
+    </header>
+
+    <div class="summary-grid" *ngIf="notificationsSummary$ | async as summary">
+      <div class="summary-card">
+        <strong>{{ summary.total }}</strong>
+        <span>Total</span>
+      </div>
+      <div class="summary-card">
+        <strong>{{ summary.no_leidas }}</strong>
+        <span>No leidas</span>
+      </div>
+      <div class="summary-card">
+        <strong>{{ summary.leidas }}</strong>
+        <span>Leidas</span>
+      </div>
+      <div class="summary-card">
+        <strong>{{ (summary.por_tipo | keyvalue).length }}</strong>
+        <span>Tipos activos</span>
+      </div>
+    </div>
+
+    <div class="types-list" *ngIf="notificationsSummary$ | async as summary">
+      <span *ngFor="let type of summary.por_tipo | keyvalue">{{ type.key }}: {{ type.value }}</span>
+    </div>
+
+    <div class="notif-actions">
+      <button type="button" (click)="refreshNotifications()">
+        <ion-icon name="refresh-outline"></ion-icon>
+        Actualizar notificaciones
+      </button>
+      <button type="button" class="ghost" (click)="markAllNotificationsRead()">
+        <ion-icon name="checkmark-done-outline"></ion-icon>
+        Marcar todas como leidas
+      </button>
+    </div>
+
+    <div class="notif-preview" *ngIf="notifications$ | async as notifications">
+      <div class="notif-item" *ngFor="let notification of notifications.slice(0, 4)">
+        <strong>{{ notification.titulo }}</strong>
+        <p>{{ notification.mensaje }}</p>
+      </div>
+      <p class="empty" *ngIf="notifications.length === 0">No hay notificaciones disponibles.</p>
+    </div>
+  </section>
+
+  <section class="panel sessions-panel">
+    <header class="panel-head">
+      <div>
+        <h3>Sesiones activas</h3>
+        <small>Gestiona dispositivos conectados a tu cuenta.</small>
+      </div>
+      <button type="button" class="danger" [disabled]="loadingSessions" (click)="revokeAllSessions()">
+        Cerrar sesiones remotas
+      </button>
+    </header>
+
+    <div class="sessions-list">
+      <article class="session-item" *ngFor="let session of sessions; trackBy: trackBySession">
+        <div class="session-copy">
+          <strong>{{ session.dispositivo || 'Dispositivo desconocido' }} <span *ngIf="session.isCurrent">(Actual)</span></strong>
+          <p>IP: {{ session.ip || 'No disponible' }}</p>
+          <small>Creada: {{ formatDate(session.createdAt) }} · Última actividad: {{ formatDate(session.ultimaActividad) }}</small>
+        </div>
+        <button type="button" class="ghost" [disabled]="session.isCurrent" (click)="revokeSession(session.id)">
+          Cerrar
+        </button>
+      </article>
+
+      <p class="empty" *ngIf="sessions.length === 0">No hay sesiones registradas.</p>
+    </div>
+  </section>
+</div>
+
+<ng-template #loadingTemplate>
+  <section class="panel loading-panel">
+    <ion-icon name="sync-outline"></ion-icon>
+    <p>Cargando configuracion...</p>
+  </section>
+</ng-template>

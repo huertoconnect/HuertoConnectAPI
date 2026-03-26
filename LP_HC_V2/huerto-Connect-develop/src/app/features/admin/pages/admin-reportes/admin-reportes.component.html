@@ -1,0 +1,24 @@
+<section class="panel">
+  <header class="head">
+    <h2>Reportes</h2><small>Generador y exportacion</small>
+  </header>
+
+  <app-selected-action-bar [title]="'Reporte seleccionado'" [selected]="selectedReporte" [actions]="actions"
+    [summaryTemplate]="reporteSummary" (clearSelection)="clearSelection()"></app-selected-action-bar>
+
+  <ng-template #reporteSummary let-reporte>
+    <p>{{ reporte.nombre }} · {{ reporte.tipo }} · {{ reporte.fecha }} · Estado: {{ reporte.estado }}</p>
+  </ng-template>
+
+  <app-admin-data-table [rows]="reportes" [columns]="columns" [selected]="selectedReporte" [rowIdentity]="rowIdentity"
+    [emptyMessage]="'No hay reportes disponibles.'" (selectedChange)="onSelectedChange($event)">
+    <ng-template #customCellTemplate let-row let-column="column">
+      <ng-container *ngIf="column.key === 'estado'">
+        <app-status-badge [status]="column.cell(row) + ''"></app-status-badge>
+      </ng-container>
+    </ng-template>
+  </app-admin-data-table>
+</section>
+
+<app-edit-modal [visible]="editVisible" [title]="isCreateMode ? 'Crear reporte' : 'Editar reporte'" [fields]="editFields"
+  [data]="editData" (save)="onEditSave($event)" (cancel)="onEditCancel()"></app-edit-modal>

@@ -1,0 +1,112 @@
+<section class="panel">
+  <header class="head">
+    <h2>Deteccion de Plagas (IA)</h2>
+    <small>Revision de imagenes, confianza y feedback al modelo</small>
+  </header>
+
+  <app-selected-action-bar [title]="'Detección seleccionada'" [selected]="selectedDeteccion" [actions]="actions"
+    [summaryTemplate]="deteccionSummary" (clearSelection)="clearSelection()"></app-selected-action-bar>
+
+  <ng-template #deteccionSummary let-deteccion>
+    <p>
+      {{ deteccion.plaga }} · {{ deteccion.ubicacion }} · Confianza:
+      {{ deteccion.confianza }}% · Estado: {{ deteccion.estado }}
+    </p>
+  </ng-template>
+
+  <app-admin-data-table [rows]="detecciones" [columns]="columns" [selected]="selectedDeteccion"
+    [rowIdentity]="rowIdentity" [emptyMessage]="'No hay detecciones disponibles.'"
+    (selectedChange)="onSelectedChange($event)">
+    <ng-template #customCellTemplate let-row let-column="column">
+      <ng-container *ngIf="column.key === 'imagen'">
+        <div class="table-img-wrapper" (click)="openDrawer(row, $event)">
+          <img [src]="row.imagenUrl" [alt]="row.plaga" (error)="onImageError($event)" />
+          <div class="zoom-overlay"><ion-icon name="scan-outline"></ion-icon></div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="column.key === 'severidad' || column.key === 'estado'">
+        <app-status-badge [status]="column.cell(row) + ''"></app-status-badge>
+      </ng-container>
+    </ng-template>
+  </app-admin-data-table>
+</section>
+
+<!-- Edit Modal -->
+<app-edit-modal [visible]="editVisible" [title]="isCreateMode ? 'Crear detección' : 'Editar detección'" [fields]="editFields" [data]="editData"
+  (save)="onEditSave($event)" (cancel)="onEditCancel()"></app-edit-modal>
+
+<!-- Confirm Dialog -->
+<app-confirm-dialog [visible]="confirmVisible" [title]="confirmTitle" [message]="confirmMessage"
+  [variant]="confirmVariant" [icon]="confirmIcon" [confirmLabel]="confirmLabel" (confirm)="onConfirm()"
+  (cancel)="onCancelConfirm()"></app-confirm-dialog>
+
+<!-- Drawer Plaga Info -->
+<div class="drawer-overlay" [class.open]="drawerVisible" (click)="closeDrawer()">
+  <div class="drawer-panel" (click)="$event.stopPropagation()">
+    <button class="drawer-close" (click)="closeDrawer()">
+      <ion-icon name="close-outline"></ion-icon>
+    </button>
+    <header>
+      <h3>Inspección de Detección</h3>
+    </header>
+
+    <div class="drawer-content" *ngIf="drawerData">
+      <div class="drawer-image-container" (mousemove)="onMouseMove($event)" (mouseenter)="zoomActive = true"
+        (mouseleave)="zoomActive = false">
+        <img [src]="drawerData.imagenUrl" alt="Evidencia de plaga" class="drawer-image" (error)="onImageError($event)" />
+
+        <!-- Amazon Zoom Lens -->
+        <div class="zoom-lens" *ngIf="zoomActive" [style.left.px]="lensX" [style.top.px]="lensY"
+          [style.width.px]="lensSize" [style.height.px]="lensSize">
+        </div>
+      </div>
+
+      <!-- Zoom Result View (Appears on Hover) -->
+      <div class="zoom-result-window" *ngIf="zoomActive" [style.background-image]="'url(' + drawerData.imagenUrl + ')'"
+        [style.background-position]="bgPosX + '% ' + bgPosY + '%'">
+      </div>
+
+      <div class="drawer-details">
+        <div class="detail-row">
+          <span>Plaga Detectada</span>
+          <strong>{{ drawerData.plaga }}</strong>
+        </div>
+        <div class="detail-row">
+          <span>Confianza</span>
+          <div class="confianza-bar-wrap">
+            <span class="confianza-value">{{ drawerData.confianza }}%</span>
+            <div class="confianza-bar"><i [style.width.%]="drawerData.confianza"></i></div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <span>Cultivo</span>
+          <strong>{{ drawerData.cultivo }}</strong>
+        </div>
+        <div class="detail-row">
+          <span>Ubicación</span>
+          <strong>{{ drawerData.ubicacion }}</strong>
+        </div>
+        <div class="detail-row">
+          <span>Severidad</span>
+          <app-status-badge [status]="drawerData.severidad"></app-status-badge>
+        </div>
+        <div class="detail-row">
+          <span>Fecha</span>
+          <strong>{{ drawerData.fecha }}</strong>
+        </div>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn btn-primary" (click)="drawerActionMarcar('Confirmada')">
+          <ion-icon name="checkmark-outline"></ion-icon> Marcar correcta
+        </button>
+        <button class="btn btn-danger" (click)="drawerActionMarcar('Descartada')">
+          <ion-icon name="close-outline"></ion-icon> Marcar incorrecta
+        </button>
+        <button class="btn btn-outline" (click)="drawerActionEditar()">
+          <ion-icon name="create-outline"></ion-icon> Editar detección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

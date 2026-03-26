@@ -1,0 +1,203 @@
+@import 'leaflet/dist/leaflet.css';
+
+/* Global Styles & Variables */
+:root {
+  /* Brand Colors */
+  --color-primary: #00D4A1;
+  /* Mint Green (Logo/Buttons) */
+  --color-primary-hover: #00b386;
+  --color-secondary: #0C3B2E;
+  /* Dark Jungle Green (Backgrounds) */
+  --color-secondary-light: #165643;
+  --color-accent: #2ECC71;
+  /* Standard Green */
+  --color-text-light: #FFFFFF;
+  --color-text-muted: #E0E0E0;
+  --color-text-dark: #333333;
+  --color-bg-light: #F9F9F9;
+  --color-bg-soft: #f8faf9;
+
+  /* Dark shades — harmonious progression */
+  --color-dark-deep: #051F20;
+  /* Features / Contact bg — slightly deeper  */
+  --color-dark-footer: #041F18;
+  /* Footer body — deepest */
+  --color-dark-footer-top: #052B21;
+  /* Footer newsletter — between secondary & footer */
+
+  /* Gradients */
+  --gradient-overlay: linear-gradient(135deg, rgba(12, 59, 46, 0.95) 0%, rgba(12, 59, 46, 0.8) 100%);
+
+  /* Typography */
+  --font-family-sans: 'Inter', sans-serif;
+  --font-size-base: 16px;
+
+  /* Spacing */
+  --container-width: 1200px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 32px;
+  --spacing-xl: 64px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  color: var(--color-text-dark);
+  line-height: 1.6;
+  background-color: var(--color-secondary);
+}
+
+/* Utilities */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-light {
+  color: var(--color-text-light);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.bg-dark {
+  background-color: var(--color-secondary);
+  color: var(--color-text-light);
+}
+
+.bg-light {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-dark);
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+
+  &.btn-primary {
+    background-color: var(--color-primary);
+    color: #fff;
+
+    /* or dark green? Logo has white text usually on this mint? No, probably white. */
+    &:hover {
+      background-color: var(--color-primary-hover);
+      transform: translateY(-2px);
+    }
+  }
+
+  &.btn-outline {
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: var(--color-text-light);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: var(--color-text-light);
+    }
+  }
+}
+
+section {
+  padding: 80px 0;
+}
+
+/* Falling leaves (without parallax) */
+.leaf-fall-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.leaf-fall-section .background-effects,
+.leaf-fall-section .bg-decoration {
+  z-index: 0;
+}
+
+.leaf-fall-section>.container {
+  position: relative;
+  z-index: 2;
+}
+
+.leaf-atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.leaf-swarm {
+  position: absolute;
+  inset: -14% 0 0;
+}
+
+.floating-leaf {
+  position: absolute;
+  color: rgb(0, 168, 118);
+  transform: translate(-50%, -50%) rotate(var(--leaf-rotation, 0deg));
+  animation:
+    sectionLeafRain calc(var(--leaf-duration, 12s) * 1) linear var(--leaf-delay, 0s) infinite,
+    sectionLeafSway calc(var(--leaf-duration, 12s) * 0.58) ease-in-out var(--leaf-delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+.floating-leaf svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px rgba(0, 168, 126, 0.35));
+}
+
+@keyframes sectionLeafRain {
+  0% {
+    transform:
+      translate(-50%, calc(-50% - 12vh)) rotate(var(--leaf-rotation, 0deg));
+  }
+
+  100% {
+    transform:
+      translate(calc(-50% + (var(--leaf-drift-x, 0px) * 0.4)), calc(-50% + 116vh)) rotate(calc(var(--leaf-rotation, 0deg) + 26deg));
+  }
+}
+
+@keyframes sectionLeafSway {
+
+  0%,
+  100% {
+    margin-left: -2px;
+  }
+
+  50% {
+    margin-left: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-leaf {
+    animation: none;
+  }
+}

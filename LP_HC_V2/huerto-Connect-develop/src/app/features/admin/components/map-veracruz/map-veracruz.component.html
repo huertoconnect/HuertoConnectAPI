@@ -1,0 +1,50 @@
+<section class="map-card">
+  <header>
+    <div>
+      <h3>Mapa de Plantios - Veracruz</h3>
+      <small>Monitoreo de plantios simulados por municipio</small>
+    </div>
+  </header>
+
+  <div class="filters">
+    <label>
+      <span>Cultivo</span>
+      <select [(ngModel)]="selectedCultivo" (ngModelChange)="applyFilters()">
+        <option value="">Todos</option>
+        <option *ngFor="let cultivo of cultivos" [value]="cultivo">{{ cultivo }}</option>
+      </select>
+    </label>
+
+    <label>
+      <span>Municipio</span>
+      <select [(ngModel)]="selectedMunicipio" (ngModelChange)="applyFilters()">
+        <option value="">Todos</option>
+        <option *ngFor="let municipio of municipios" [value]="municipio">{{ municipio }}</option>
+      </select>
+    </label>
+
+    <label>
+      <span>Severidad</span>
+      <select [(ngModel)]="selectedSeveridad" (ngModelChange)="applyFilters()">
+        <option value="">Todas</option>
+        <option *ngFor="let severidad of severidades" [value]="severidad">{{ severidad }}</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="map-view" #mapContainer></div>
+
+  <div class="summary" *ngIf="filteredPlantios.length > 0">
+    <div *ngFor="let plantio of filteredPlantios; trackBy: trackByPlantio" class="item">
+      <div class="item-header">
+        <strong>{{ plantio.nombre }}</strong>
+        <span class="location"><ion-icon name="location-outline"></ion-icon> {{ plantio.municipio }}</span>
+      </div>
+      <span class="crop-name">{{ plantio.cultivo }}</span>
+      <small>
+        <span class="badge badge-salud">Salud: {{ plantio.salud }}%</span>
+        <span class="badge badge-alert" [class.danger]="plantio.alertas > 0">Alertas: {{ plantio.alertas }}</span>
+      </small>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,170 @@
+<div class="dashboard" *ngIf="vm$ | async as vm">
+  <section class="panel hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Resumen general</p>
+      <h2>Gestion inteligente de tus huertos</h2>
+      <p>Visualiza alertas, prioridades de trabajo y recomendaciones de IA en una sola vista.</p>
+      <div class="hero-tags">
+        <span class="tag good">
+          <ion-icon name="leaf-outline"></ion-icon>
+          {{ vm.huertosOptimos }} huertos estables
+        </span>
+        <span class="tag warn">
+          <ion-icon name="pulse-outline"></ion-icon>
+          {{ vm.huertosEnRiesgo }} en seguimiento
+        </span>
+      </div>
+    </div>
+
+    <div class="hero-score">
+      <div class="score-ring" [style.--progress]="vm.promedioSalud">
+        <strong>{{ vm.promedioSalud }}%</strong>
+        <span>Salud promedio</span>
+      </div>
+      <small *ngIf="vm.mejorHuerto as best">
+        Mejor desempeño: <strong>{{ best.nombre }}</strong> ({{ best.salud }}%)
+      </small>
+    </div>
+  </section>
+
+  <section class="kpi-grid">
+    <article class="kpi-card">
+      <p>Mis huertos</p>
+      <strong>{{ vm.totalHuertos }}</strong>
+      <small>Operativos actualmente</small>
+    </article>
+
+    <article class="kpi-card">
+      <p>Alertas criticas</p>
+      <strong>{{ vm.alertasCriticas }}</strong>
+      <small>Prioridad alta</small>
+    </article>
+
+    <article class="kpi-card">
+      <p>Huertos en riesgo</p>
+      <strong>{{ vm.huertosEnRiesgo }}</strong>
+      <small>Requieren seguimiento</small>
+    </article>
+
+    <article class="kpi-card">
+      <p>Salud promedio</p>
+      <strong>{{ vm.promedioSalud }}%</strong>
+      <small>Nivel general de tus cultivos</small>
+    </article>
+  </section>
+
+  <section class="grid two top-grid">
+    <article class="panel priorities">
+      <header>
+        <h3>Prioridades de hoy</h3>
+      </header>
+      <div class="list">
+        <div class="priority-item" *ngFor="let priority of vm.prioridadHoy; trackBy: trackByPriority">
+          <div>
+            <strong>{{ priority.titulo }}</strong>
+            <span>{{ priority.detalle }}</span>
+          </div>
+          <small
+            [class.high]="priority.nivel === 'Alta'"
+            [class.medium]="priority.nivel === 'Media'"
+            [class.low]="priority.nivel === 'Baja'">
+            {{ priority.nivel }}
+          </small>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <header><h3>Mis huertos</h3></header>
+      <div class="list">
+        <div class="list-item huerto" *ngFor="let huerto of vm.huertos; trackBy: trackByHuerto">
+          <div>
+            <strong>{{ huerto.nombre }}</strong>
+            <span>{{ huerto.region }} · {{ huerto.cultivosActivos }} cultivos activos</span>
+            <div class="progress">
+              <i [style.width.%]="huerto.salud"></i>
+            </div>
+          </div>
+          <small
+            [class.warn]="huerto.estado === 'Atencion'"
+            [class.danger]="huerto.estado === 'Critico'">
+            {{ getHuertoStatusLabel(huerto.estado) }} · {{ huerto.salud }}%
+          </small>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="grid two">
+    <article class="panel">
+      <header><h3>Alertas de plagas</h3></header>
+      <div class="list">
+        <div class="list-item" *ngFor="let alerta of vm.alertas; trackBy: trackByAlerta">
+          <div>
+            <strong>{{ alerta.titulo }}</strong>
+            <span>{{ formatAlertDate(alerta.fecha) }}</span>
+          </div>
+          <small
+            [class.warn]="alerta.severidad === 'Advertencia'"
+            [class.danger]="alerta.severidad === 'Critico'">
+            {{ alerta.severidad }}
+          </small>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <header><h3>Recomendaciones del chatbot</h3></header>
+      <ng-container *ngIf="vm.recomendacionesVisibles.length > 0; else emptyRecommendations">
+        <div class="list">
+          <div class="list-item recommendation" *ngFor="let recomendacion of vm.recomendacionesVisibles; trackBy: trackByRecommendation">
+            <div>
+              <strong>{{ recomendacion.tema }}</strong>
+              <span>{{ recomendacion.recomendacion }}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #emptyRecommendations>
+        <div class="empty-state">
+          <ion-icon name="sparkles-outline"></ion-icon>
+          <p>Aun no hay recomendaciones generadas para hoy.</p>
+        </div>
+      </ng-template>
+    </article>
+  </section>
+
+  <section class="grid two">
+    <article class="panel">
+      <header><h3>Historial de cultivos</h3></header>
+      <ng-container *ngIf="vm.historialVisible.length > 0; else emptyHistory">
+        <div class="list">
+          <div class="list-item" *ngFor="let item of vm.historialVisible; trackBy: trackByHistorial">
+            <div>
+              <strong>{{ item.cultivo }}</strong>
+              <span>{{ item.huerto }} · {{ item.temporada }}</span>
+            </div>
+            <small>{{ item.estado }}</small>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #emptyHistory>
+        <div class="empty-state">
+          <ion-icon name="time-outline"></ion-icon>
+          <p>Tu historial aparecera aqui conforme registres nuevas temporadas.</p>
+        </div>
+      </ng-template>
+    </article>
+
+    <article class="panel">
+      <header><h3>Estadisticas de crecimiento</h3></header>
+      <div class="growth-chart">
+        <div class="bar-col" *ngFor="let stat of vm.estadisticas; trackBy: trackByStat">
+          <span class="value">{{ stat.value }}%</span>
+          <span class="bar" [style.height.%]="toBarHeight(stat.value, vm.maxGrowthValue)"></span>
+          <strong>{{ stat.label }}</strong>
+        </div>
+      </div>
+    </article>
+  </section>
+</div>

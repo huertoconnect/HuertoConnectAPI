@@ -1,0 +1,33 @@
+<header [class.scrolled]="isScrolled">
+  <div class="container header-container">
+    <div class="logo">
+      <div class="logo-icon">
+        <img src="/assets/images/brote.png" alt="Huerto Connect Logo" class="logo-img logo-white">
+        <img src="/assets/images/brote-negro.png" alt="Huerto Connect Logo" class="logo-img logo-dark">
+      </div>
+      <span class="logo-text">HUERTO CONNECT</span>
+    </div>
+
+    <nav class="nav-desktop">
+      <a *ngFor="let link of links" (click)="scrollToSection(link.sectionId)"
+        [class.active]="activeSection === link.sectionId">
+        {{ link.label }}
+      </a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn btn-primary" routerLink="/login">Iniciar Sesión</button>
+      <button class="mobile-toggle" (click)="toggleMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.open]="isMenuOpen">
+    <a *ngFor="let link of links" (click)="scrollToSection(link.sectionId)">{{ link.label }}</a>
+    <button class="btn btn-primary mobile-cta" routerLink="/login">Iniciar Sesión</button>
+  </div>
+</header>

@@ -1,0 +1,10 @@
+<section class="panel">
+  <header class="head"><h2>Recomendaciones</h2><small>Guias por cultivo y region</small></header>
+  <div class="rec" *ngFor="let item of recomendaciones">
+    <div>
+      <strong>{{ item.titulo }}</strong>
+      <span>{{ item.region }} · {{ item.cultivo }}</span>
+    </div>
+    <b>{{ item.estado }}</b>
+  </div>
+</section>

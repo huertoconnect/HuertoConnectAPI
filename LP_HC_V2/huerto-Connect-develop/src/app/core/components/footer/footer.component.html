@@ -1,0 +1,83 @@
+<footer class="site-footer">
+    <div class="container footer-main">
+        <div class="footer-brand">
+            <div class="logo">
+                <img src="/assets/images/brote.png" alt="Huerto Connect" class="logo-brote" />
+                <span class="logo-text">HUERTO CONNECT</span>
+            </div>
+            <p>
+                Transformando la agricultura tradicional en ecosistemas inteligentes y sostenibles.
+            </p>
+            <a class="brand-contact" href="mailto:huertoconnec@gmail.com">huertoconnec@gmail.com</a>
+        </div>
+
+        <div class="footer-links">
+            <h4>Enlaces Rápidos</h4>
+            <ul>
+                <li *ngFor="let link of quickLinks">
+                    <a href="" (click)="onQuickLinkClick($event, link.sectionId)">{{ link.label }}</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer-links">
+            <h4>Servicios</h4>
+            <ul>
+                <li *ngFor="let item of services">
+                    <span class="service-item">{{ item }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer-links">
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="" (click)="openLegalModal($event, 'terminos')">Términos y Condiciones</a></li>
+                <li><a href="" (click)="openLegalModal($event, 'privacidad')">Política de Privacidad</a></li>
+                <li><a href="" (click)="openLegalModal($event, 'aviso')">Aviso Legal</a></li>
+                <li><a href="" (click)="openLegalModal($event, 'cookies')">Política de Cookies</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container bottom-content">
+            <p>&copy; {{ currentYear }} Huerto Connect. Todos los derechos reservados.</p>
+            <p class="made-with">Hecho con amor en Veracruz, México</p>
+        </div>
+    </div>
+</footer>
+
+<section
+    *ngIf="activeLegalDocument as legal"
+    class="legal-modal-overlay"
+    role="presentation"
+    (click)="onOverlayClick($event)">
+    <article
+        class="legal-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="legal-modal-title">
+        <button type="button" class="close-btn" aria-label="Cerrar modal legal" (click)="closeLegalModal()">
+            <span aria-hidden="true">×</span>
+        </button>
+
+        <header class="legal-header">
+            <span class="legal-kicker">Marco Legal</span>
+            <h3 id="legal-modal-title">{{ legal.title }}</h3>
+            <p>{{ legal.subtitle }}</p>
+            <small>{{ legal.updatedAt }}</small>
+        </header>
+
+        <div class="legal-content">
+            <section class="legal-section" *ngFor="let section of legal.sections; trackBy: trackBySection">
+                <h4>{{ section.heading }}</h4>
+                <p *ngFor="let paragraph of section.paragraphs">{{ paragraph }}</p>
+            </section>
+        </div>
+
+        <footer class="legal-footer">
+            <button type="button" class="legal-close-action" (click)="closeLegalModal()">Cerrar</button>
+        </footer>
+    </article>
+</section>

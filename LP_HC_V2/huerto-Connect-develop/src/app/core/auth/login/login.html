@@ -1,0 +1,457 @@
+<div class="login-scene" (pointermove)="onPointerMove($event)" (pointerleave)="onPointerLeave()"
+    [style.--wind-x]="windXPx + 'px'" [style.--wind-y]="windYPx + 'px'">
+    <a class="back-home" routerLink="/" aria-label="Volver al inicio">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        <span>Volver</span>
+    </a>
+
+    <div class="dynamic-bg" aria-hidden="true">
+        <div class="sprout-field">
+            <div class="sprout" *ngFor="let sprout of sprouts" [style.left.%]="sprout.x" [style.top.%]="sprout.y"
+                [style.width.px]="sprout.size" [style.height.px]="sprout.size" [style.--delay]="sprout.delay + 's'"
+                [style.--float-duration]="sprout.duration + 's'" [style.--drift-x.px]="sprout.driftX"
+                [style.--drift-y.px]="sprout.driftY" [style.opacity]="sprout.opacity"
+                [style.--base-rotation]="sprout.rotate + 'deg'">
+                <ion-icon name="leaf-outline"></ion-icon>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" [class.toggle]="isRegister">
+        <div class="container-form">
+            <form class="sign-in" (ngSubmit)="onAuthSubmit()" autocomplete="off" [ngClass]="{
+                'sign-in--forgot': authStep === 'forgot-email' || authStep === 'forgot-otp' || authStep === 'forgot-reset',
+                'sign-in--forgot-otp': authStep === 'forgot-otp'
+            }">
+                <h2>
+                    {{
+                    authStep === 'credentials'
+                    ? 'Iniciar Sesión'
+                    : authStep === 'otp'
+                    ? 'Verifica tu cuenta'
+                    : authStep === 'forgot-email'
+                    ? 'Recuperar cuenta'
+                    : authStep === 'forgot-otp'
+                    ? 'Código de recuperación'
+                    : 'Nueva contraseña'
+                    }}
+                </h2>
+                <!-- [hidden] en lugar de *ngIf: el div permanece en el DOM para que @ViewChild no pierda la referencia al volver de OTP -->
+                <div class="google-signin-section" [hidden]="authStep !== 'credentials'">
+                    <div #googleBtnLogin class="google-btn-container">
+                        <!-- Google GIS renderiza el botón oficial aquí en ngAfterViewInit -->
+                        <div class="google-loading-overlay" *ngIf="isGoogleLoading">
+                            <span>Autenticando...</span>
+                        </div>
+                    </div>
+                    <p class="form-feedback form-feedback--error" *ngIf="googleErrorMessage">
+                        {{ googleErrorMessage }}
+                    </p>
+                    <div class="social-divider">
+                        <span>o</span>
+                    </div>
+                </div>
+                <span *ngIf="authStep === 'credentials'">Use su correo y contraseña</span>
+                <span *ngIf="authStep === 'otp'">Ingresa el código enviado a tu correo</span>
+                <span *ngIf="authStep === 'forgot-email'">Te enviaremos un código para restablecer tu contraseña</span>
+                <span *ngIf="authStep === 'forgot-otp'">Ingresa el código de recuperación enviado a tu correo</span>
+                <span *ngIf="authStep === 'forgot-reset'">Define una nueva contraseña segura</span>
+
+                <ng-container *ngIf="authStep === 'credentials'; else nonCredentialStepTemplate">
+                    <div class="container-input" [class.input-error]="isFieldInvalid('loginEmail')"
+                        [class.input-success]="isFieldValid('loginEmail')">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="email" name="loginEmail" [(ngModel)]="loginEmail" placeholder="Email"
+                            autocomplete="off" required maxlength="254" (ngModelChange)="onLoginEmailChange($event)"
+                            (blur)="onFieldBlur('loginEmail')">
+                    </div>
+                    <p class="field-hint field-hint--error" *ngIf="getFieldError('loginEmail') as emailError">
+                        {{ emailError }}
+                    </p>
+                    <div class="container-input" [class.input-error]="isFieldInvalid('loginPassword')"
+                        [class.input-success]="isFieldValid('loginPassword')">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input [type]="getPasswordInputType('loginPassword')" name="loginPassword"
+                            [(ngModel)]="loginPassword" placeholder="Password"
+                            autocomplete="off" required maxlength="64" (ngModelChange)="onLoginPasswordChange($event)"
+                            (blur)="onFieldBlur('loginPassword')">
+                        <button type="button" class="password-toggle"
+                            [attr.aria-label]="showLoginPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                            (mousedown)="onPasswordToggleMouseDown($event)"
+                            (click)="onPasswordToggleClick($event, 'loginPassword')">
+                            <ion-icon [name]="getPasswordToggleIcon('loginPassword')"></ion-icon>
+                        </button>
+                    </div>
+                    <p class="field-hint field-hint--error" *ngIf="getFieldError('loginPassword') as loginPasswordError">
+                        {{ loginPasswordError }}
+                    </p>
+                    <button type="button" class="mode-link mode-link--solo" (click)="onStartForgotPassword()">
+                        ¿Olvidaste tu contraseña?
+                    </button>
+                    <p class="form-feedback form-feedback--info" *ngIf="loginInfoMessage">
+                        {{ loginInfoMessage }}
+                    </p>
+                    <p class="form-feedback form-feedback--error" *ngIf="loginErrorMessage">
+                        {{ loginErrorMessage }}
+                    </p>
+                    <button class="button" type="submit"
+                        [disabled]="isSubmittingLogin || !isCredentialsFormValid() || isLoginTemporarilyRestricted()">
+                        {{ isSubmittingLogin ? 'ENVIANDO CÓDIGO...' : 'INICIAR SESIÓN' }}
+                    </button>
+                </ng-container>
+
+                <ng-template #nonCredentialStepTemplate>
+                    <ng-container *ngIf="authStep === 'otp'; else forgotFlowTemplate">
+                        <div class="otp-shell">
+                            <div class="otp-icon" aria-hidden="true">
+                                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                            </div>
+                            <p class="otp-detail">
+                                Enviamos un código de seguridad a
+                                <strong>{{ maskedLoginEmail || loginEmail }}</strong>
+                            </p>
+                            <div class="code-input-shell">
+                                <div class="code-inputs" (paste)="onCodeDigitsPaste($event)">
+                                    <div class="code-node" *ngFor="let idx of codeIndexes">
+                                        <input [id]="'code-digit-' + idx" class="code-digit" type="text"
+                                            inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code"
+                                            maxlength="1" [value]="codeDigits[idx]"
+                                            (input)="onCodeDigitInput(idx, $any($event.target).value)"
+                                            (keydown)="onCodeDigitKeydown(idx, $event)"
+                                            [disabled]="isSubmittingLogin || !otpChallengeId">
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="otp-expiration" *ngIf="otpChallengeId; else sendingOtpState">
+                                Expira en {{ otpCountdownText }}
+                            </p>
+                            <ng-template #sendingOtpState>
+                                <p class="otp-expiration">Enviando código...</p>
+                            </ng-template>
+                        </div>
+
+                        <p class="form-feedback form-feedback--info" *ngIf="otpInfoMessage">
+                            {{ otpInfoMessage }}
+                        </p>
+                        <p class="form-feedback form-feedback--error" *ngIf="otpErrorMessage">
+                            {{ otpErrorMessage }}
+                        </p>
+
+                        <button class="button button--code" type="submit"
+                            [disabled]="isVerifyingOtp || isSubmittingLogin || !otpChallengeId">
+                            {{ isSubmittingLogin ? 'ENVIANDO CÓDIGO...' : (isVerifyingOtp ? 'VERIFICANDO...' : 'VERIFICAR CÓDIGO') }}
+                        </button>
+                        <button type="button" class="mode-link" (click)="onResendOtp()"
+                            [disabled]="isResendingOtp || !canResendOtp">
+                            {{ isResendingOtp ? 'REENVIANDO...' : 'Reenviar código' }}
+                        </button>
+                        <button type="button" class="mode-link" (click)="onBackToCredentials()">
+                            Cambiar correo o contraseña
+                        </button>
+                    </ng-container>
+
+                    <ng-template #forgotFlowTemplate>
+                        <ng-container *ngIf="authStep === 'forgot-email'">
+                            <div class="container-input" [class.input-error]="isFieldInvalid('forgotEmail')"
+                                [class.input-success]="isFieldValid('forgotEmail')">
+                                <ion-icon name="mail-outline"></ion-icon>
+                                <input type="email" name="forgotEmail" [(ngModel)]="forgotEmail"
+                                    placeholder="Correo electrónico" autocomplete="off" required maxlength="254"
+                                    (ngModelChange)="onForgotEmailChange($event)" (blur)="onFieldBlur('forgotEmail')">
+                            </div>
+                            <p class="field-hint field-hint--error" *ngIf="getFieldError('forgotEmail') as forgotEmailError">
+                                {{ forgotEmailError }}
+                            </p>
+                            <p class="form-feedback form-feedback--info" *ngIf="forgotInfoMessage">
+                                {{ forgotInfoMessage }}
+                            </p>
+                            <p class="form-feedback form-feedback--error" *ngIf="forgotErrorMessage">
+                                {{ forgotErrorMessage }}
+                            </p>
+                            <button class="button" type="submit"
+                                [disabled]="isSubmittingForgotRequest || !isForgotEmailFormValid()">
+                                {{ isSubmittingForgotRequest ? 'ENVIANDO CÓDIGO...' : 'ENVIAR CÓDIGO' }}
+                            </button>
+                            <button type="button" class="mode-link" (click)="onCancelForgotPassword()">
+                                Volver a iniciar sesión
+                            </button>
+                        </ng-container>
+
+                        <ng-container *ngIf="authStep === 'forgot-otp'">
+                            <div class="otp-shell">
+                                <div class="otp-icon" aria-hidden="true">
+                                    <ion-icon name="mail-open-outline"></ion-icon>
+                                </div>
+                                <p class="otp-detail">
+                                    Enviamos un código de recuperación a
+                                    <strong>{{ forgotMaskedEmail || forgotEmail }}</strong>
+                                </p>
+                                <div class="code-input-shell">
+                                    <div class="code-inputs" (paste)="onForgotCodeDigitsPaste($event)">
+                                        <div class="code-node" *ngFor="let idx of codeIndexes">
+                                            <input [id]="'forgot-code-digit-' + idx" class="code-digit" type="text"
+                                                inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code"
+                                                maxlength="1" [value]="forgotCodeDigits[idx]"
+                                                (input)="onForgotCodeDigitInput(idx, $any($event.target).value)"
+                                                (keydown)="onForgotCodeDigitKeydown(idx, $event)"
+                                                [disabled]="isVerifyingForgotOtp || !forgotChallengeId">
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="otp-expiration" *ngIf="forgotChallengeId">
+                                    Expira en {{ forgotOtpCountdownText }}
+                                </p>
+                            </div>
+
+                            <p class="form-feedback form-feedback--info" *ngIf="forgotInfoMessage">
+                                {{ forgotInfoMessage }}
+                            </p>
+                            <p class="form-feedback form-feedback--error" *ngIf="forgotErrorMessage">
+                                {{ forgotErrorMessage }}
+                            </p>
+
+                            <button class="button button--code" type="submit"
+                                [disabled]="isVerifyingForgotOtp || !forgotChallengeId">
+                                {{ isVerifyingForgotOtp ? 'VALIDANDO...' : 'VALIDAR CÓDIGO' }}
+                            </button>
+                            <button type="button" class="mode-link" (click)="onResendForgotOtp()"
+                                [disabled]="isResendingForgotOtp || !canResendForgotOtp">
+                                {{ isResendingForgotOtp ? 'REENVIANDO...' : 'Reenviar código' }}
+                            </button>
+                            <button type="button" class="mode-link" (click)="onBackToForgotEmail()">
+                                Cambiar correo
+                            </button>
+                        </ng-container>
+
+                        <ng-container *ngIf="authStep === 'forgot-reset'">
+                            <div class="container-input" [class.input-error]="isFieldInvalid('forgotNewPassword')"
+                                [class.input-success]="isFieldValid('forgotNewPassword')">
+                                <ion-icon name="lock-closed-outline"></ion-icon>
+                                <input [type]="getPasswordInputType('forgotNewPassword')" name="forgotNewPassword"
+                                    [(ngModel)]="forgotNewPassword"
+                                    placeholder="Nueva contraseña" autocomplete="off" required maxlength="64"
+                                    (ngModelChange)="onForgotNewPasswordChange($event)"
+                                    (blur)="onFieldBlur('forgotNewPassword')">
+                                <button type="button" class="password-toggle"
+                                    [attr.aria-label]="showForgotNewPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                                    (mousedown)="onPasswordToggleMouseDown($event)"
+                                    (click)="onPasswordToggleClick($event, 'forgotNewPassword')">
+                                    <ion-icon [name]="getPasswordToggleIcon('forgotNewPassword')"></ion-icon>
+                                </button>
+                            </div>
+                            <p class="field-hint field-hint--error"
+                                *ngIf="getFieldError('forgotNewPassword') as forgotNewPasswordError">
+                                {{ forgotNewPasswordError }}
+                            </p>
+                            <div class="container-input" [class.input-error]="isFieldInvalid('forgotConfirmPassword')"
+                                [class.input-success]="isFieldValid('forgotConfirmPassword')">
+                                <ion-icon name="lock-closed-outline"></ion-icon>
+                                <input [type]="getPasswordInputType('forgotConfirmPassword')"
+                                    name="forgotConfirmPassword"
+                                    [(ngModel)]="forgotConfirmPassword" placeholder="Confirmar contraseña"
+                                    autocomplete="off" required maxlength="64"
+                                    (ngModelChange)="onForgotConfirmPasswordChange($event)"
+                                    (blur)="onFieldBlur('forgotConfirmPassword')">
+                                <button type="button" class="password-toggle"
+                                    [attr.aria-label]="showForgotConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                                    (mousedown)="onPasswordToggleMouseDown($event)"
+                                    (click)="onPasswordToggleClick($event, 'forgotConfirmPassword')">
+                                    <ion-icon [name]="getPasswordToggleIcon('forgotConfirmPassword')"></ion-icon>
+                                </button>
+                            </div>
+                            <p class="field-hint field-hint--error"
+                                *ngIf="getFieldError('forgotConfirmPassword') as forgotConfirmPasswordError">
+                                {{ forgotConfirmPasswordError }}
+                            </p>
+                            <p class="form-feedback form-feedback--info" *ngIf="forgotInfoMessage">
+                                {{ forgotInfoMessage }}
+                            </p>
+                            <p class="form-feedback form-feedback--error" *ngIf="forgotErrorMessage">
+                                {{ forgotErrorMessage }}
+                            </p>
+                            <button class="button" type="submit"
+                                [disabled]="isSubmittingPasswordReset || !isForgotResetFormValid()">
+                                {{ isSubmittingPasswordReset ? 'ACTUALIZANDO...' : 'ACTUALIZAR CONTRASEÑA' }}
+                            </button>
+                            <button type="button" class="mode-link" (click)="onCancelForgotPassword()">
+                                Cancelar
+                            </button>
+                        </ng-container>
+                    </ng-template>
+                </ng-template>
+            </form>
+        </div>
+
+        <div class="container-form">
+            <form class="sign-up" (ngSubmit)="registerStep === 'form' ? onRegister() : onVerifyRegisterOtp()"
+                autocomplete="off">
+                <h2>{{ registerStep === 'form' ? 'Crear cuenta' : 'Verifica tu correo' }}</h2>
+
+                <ng-container *ngIf="registerStep === 'form'">
+                    <div class="google-signin-section">
+                        <div #googleBtnRegister class="google-btn-container">
+                            <!-- Google GIS renderiza el botón oficial aquí en ngAfterViewInit -->
+                            <div class="google-loading-overlay" *ngIf="isGoogleLoading">
+                                <span>Autenticando...</span>
+                            </div>
+                        </div>
+                        <p class="form-feedback form-feedback--error" *ngIf="googleErrorMessage">
+                            {{ googleErrorMessage }}
+                        </p>
+                        <div class="social-divider">
+                            <span>o</span>
+                        </div>
+                    </div>
+                    <span>Completa tus datos para registrarte</span>
+                    <div class="input-row">
+                        <div class="container-input" [class.input-error]="isFieldInvalid('registerName')"
+                            [class.input-success]="isFieldValid('registerName')">
+                            <ion-icon name="person-outline"></ion-icon>
+                            <input type="text" name="registerName" [(ngModel)]="registerName" placeholder="Nombre"
+                                autocomplete="off" required maxlength="50"
+                                (ngModelChange)="onRegisterNameChange($event)" (blur)="onFieldBlur('registerName')">
+                        </div>
+                        <div class="container-input" [class.input-error]="isFieldInvalid('registerApellidos')"
+                            [class.input-success]="isFieldValid('registerApellidos')">
+                            <ion-icon name="person-outline"></ion-icon>
+                            <input type="text" name="registerApellidos" [(ngModel)]="registerApellidos"
+                                placeholder="Apellidos" autocomplete="off" maxlength="50"
+                                (ngModelChange)="onRegisterApellidosChange($event)"
+                                (blur)="onFieldBlur('registerApellidos')">
+                        </div>
+                    </div>
+                    <p class="field-hint field-hint--error" *ngIf="getFieldError('registerName') as registerNameError">
+                        {{ registerNameError }}
+                    </p>
+                    <p class="field-hint field-hint--error"
+                        *ngIf="getFieldError('registerApellidos') as registerLastNameError">
+                        {{ registerLastNameError }}
+                    </p>
+                    <div class="container-input" [class.input-error]="isFieldInvalid('registerEmail')"
+                        [class.input-success]="isFieldValid('registerEmail')">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="email" name="registerEmail" [(ngModel)]="registerEmail"
+                            placeholder="Correo electrónico" autocomplete="off" required maxlength="254"
+                            (ngModelChange)="onRegisterEmailChange($event)" (blur)="onFieldBlur('registerEmail')">
+                    </div>
+                    <p class="field-hint field-hint--error" *ngIf="getFieldError('registerEmail') as registerEmailError">
+                        {{ registerEmailError }}
+                    </p>
+                    <div class="container-input" [class.input-error]="isFieldInvalid('registerPassword')"
+                        [class.input-success]="isFieldValid('registerPassword')">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input [type]="getPasswordInputType('registerPassword')" name="registerPassword"
+                            [(ngModel)]="registerPassword"
+                            placeholder="Contraseña" autocomplete="off" required maxlength="64"
+                            (ngModelChange)="onRegisterPasswordChange($event)" (blur)="onFieldBlur('registerPassword')">
+                        <button type="button" class="password-toggle"
+                            [attr.aria-label]="showRegisterPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                            (mousedown)="onPasswordToggleMouseDown($event)"
+                            (click)="onPasswordToggleClick($event, 'registerPassword')">
+                            <ion-icon [name]="getPasswordToggleIcon('registerPassword')"></ion-icon>
+                        </button>
+                    </div>
+                    <p class="field-hint field-hint--error"
+                        *ngIf="getFieldError('registerPassword') as registerPasswordError">
+                        {{ registerPasswordError }}
+                    </p>
+                    <div class="password-strength" *ngIf="registerPassword.length > 0">
+                        <div class="strength-bar">
+                            <div class="strength-fill" [style.width.%]="passwordStrength.percent"
+                                [class.weak]="passwordStrength.level === 'weak'"
+                                [class.medium]="passwordStrength.level === 'medium'"
+                                [class.strong]="passwordStrength.level === 'strong'"></div>
+                        </div>
+                        <span class="strength-label" [class.weak]="passwordStrength.level === 'weak'"
+                            [class.medium]="passwordStrength.level === 'medium'"
+                            [class.strong]="passwordStrength.level === 'strong'">{{ passwordStrength.label }}</span>
+                    </div>
+                    <div class="container-input" [class.input-error]="isFieldInvalid('registerConfirmPassword')"
+                        [class.input-success]="isFieldValid('registerConfirmPassword')">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input [type]="getPasswordInputType('registerConfirmPassword')"
+                            name="registerConfirmPassword" [(ngModel)]="registerConfirmPassword"
+                            placeholder="Confirmar contraseña" autocomplete="off" required maxlength="64"
+                            (ngModelChange)="onRegisterConfirmPasswordChange($event)"
+                            (blur)="onFieldBlur('registerConfirmPassword')">
+                        <button type="button" class="password-toggle"
+                            [attr.aria-label]="showRegisterConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                            (mousedown)="onPasswordToggleMouseDown($event)"
+                            (click)="onPasswordToggleClick($event, 'registerConfirmPassword')">
+                            <ion-icon [name]="getPasswordToggleIcon('registerConfirmPassword')"></ion-icon>
+                        </button>
+                    </div>
+                    <p class="field-hint field-hint--error"
+                        *ngIf="getFieldError('registerConfirmPassword') as registerConfirmPasswordError">
+                        {{ registerConfirmPasswordError }}
+                    </p>
+                    <p class="form-feedback form-feedback--error" *ngIf="registerErrorMessage">
+                        {{ registerErrorMessage }}
+                    </p>
+                    <button class="button" type="submit" [disabled]="isSubmittingRegister || !isRegisterFormValid()">
+                        {{ isSubmittingRegister ? 'CREANDO CUENTA...' : 'REGISTRARSE' }}
+                    </button>
+                </ng-container>
+
+                <ng-container *ngIf="registerStep === 'otp'">
+                    <div class="otp-shell">
+                        <div class="otp-icon" aria-hidden="true">
+                            <ion-icon name="mail-open-outline"></ion-icon>
+                        </div>
+                        <p class="otp-detail">
+                            Te enviamos un código de verificación a
+                            <strong>{{ maskedRegisterEmail || registerEmail }}</strong>
+                        </p>
+                        <div class="code-input-shell">
+                            <div class="code-inputs" (paste)="onRegCodeDigitsPaste($event)">
+                                <div class="code-node" *ngFor="let idx of codeIndexes">
+                                    <input [id]="'reg-code-digit-' + idx" class="code-digit" type="text"
+                                        inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" maxlength="1"
+                                        [value]="regCodeDigits[idx]"
+                                        (input)="onRegCodeDigitInput(idx, $any($event.target).value)"
+                                        (keydown)="onRegCodeDigitKeydown(idx, $event)"
+                                        [disabled]="isVerifyingRegisterOtp || !registerChallengeId">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="otp-expiration" *ngIf="registerChallengeId">
+                            Expira en {{ regOtpCountdownText }}
+                        </p>
+                    </div>
+
+                    <p class="form-feedback form-feedback--info" *ngIf="regOtpInfoMessage">
+                        {{ regOtpInfoMessage }}
+                    </p>
+                    <p class="form-feedback form-feedback--error" *ngIf="regOtpErrorMessage">
+                        {{ regOtpErrorMessage }}
+                    </p>
+
+                    <button class="button button--code" type="submit"
+                        [disabled]="isVerifyingRegisterOtp || !registerChallengeId">
+                        {{ isVerifyingRegisterOtp ? 'VERIFICANDO...' : 'VERIFICAR CÓDIGO' }}
+                    </button>
+                    <button type="button" class="mode-link" (click)="onResendRegisterOtp()"
+                        [disabled]="isResendingRegisterOtp || !canResendRegisterOtp">
+                        {{ isResendingRegisterOtp ? 'REENVIANDO...' : 'Reenviar código' }}
+                    </button>
+                    <button type="button" class="mode-link" (click)="onBackToRegisterForm()">
+                        Volver al formulario
+                    </button>
+                </ng-container>
+            </form>
+        </div>
+
+        <div class="container-welcome">
+            <div class="welcome-sign-up welcome">
+                <h3>¡Bienvenido!</h3>
+                <p>Ingrese sus datos personales para usar todas las funciones del sitio</p>
+                <button class="button" id="btn-sign-up" type="button" (click)="toggleMode()">Registrarse</button>
+            </div>
+            <div class="welcome-sign-in welcome">
+                <h3>¡Hola!</h3>
+                <p>Regístrese con sus datos personales para usar todas las funciones del sitio</p>
+                <button class="button" id="btn-sign-in" type="button" (click)="toggleMode()">Iniciar Sesión</button>
+            </div>
+        </div>
+    </div>
+</div>

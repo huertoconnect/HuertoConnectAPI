@@ -1,0 +1,14 @@
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th *ngFor="let col of columns">{{ col.label }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rows; trackBy: trackByIndex">
+        <td *ngFor="let col of columns">{{ row[col.key] }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

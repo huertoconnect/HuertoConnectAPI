@@ -1,0 +1,1023 @@
+:host {
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SPLASH SCREEN — Futuristic Eco-Technology
+   ═══════════════════════════════════════════════════════ */
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(0, 180, 220, 0.09) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 75%, rgba(0, 255, 163, 0.08) 0%, transparent 55%),
+    radial-gradient(circle at 30% 50%, rgba(0, 100, 255, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 70% 50%, rgba(0, 200, 150, 0.06) 0%, transparent 40%),
+    linear-gradient(170deg, rgba(2, 26, 18, 0.88) 0%, rgba(3, 18, 16, 0.88) 40%, rgba(1, 16, 8, 0.88) 100%);
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.splash-screen.hidden {
+  display: none;
+}
+
+/* ─── Ambient Background ─── */
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 200, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 200, 255, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at center, black 25%, transparent 65%);
+  opacity: 0.4;
+  animation: grid-drift 20s linear infinite;
+}
+
+.ambient-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(0, 220, 255, 0.6);
+  box-shadow: 0 0 6px rgba(0, 220, 255, 0.3);
+  animation: particle-float 8s ease-in-out infinite;
+}
+
+.p1 {
+  left: 15%;
+  top: 20%;
+  animation-delay: 0s;
+  animation-duration: 9s;
+}
+
+.p2 {
+  left: 80%;
+  top: 30%;
+  animation-delay: -1.2s;
+  animation-duration: 7s;
+  background: rgba(0, 255, 163, 0.5);
+}
+
+.p3 {
+  left: 25%;
+  top: 70%;
+  animation-delay: -2.5s;
+  animation-duration: 11s;
+}
+
+.p4 {
+  left: 75%;
+  top: 65%;
+  animation-delay: -3.8s;
+  animation-duration: 8s;
+  background: rgba(0, 255, 163, 0.5);
+}
+
+.p5 {
+  left: 45%;
+  top: 15%;
+  animation-delay: -5s;
+  animation-duration: 10s;
+  width: 1.5px;
+  height: 1.5px;
+}
+
+.p6 {
+  left: 55%;
+  top: 80%;
+  animation-delay: -6.2s;
+  animation-duration: 9.5s;
+  width: 1.5px;
+  height: 1.5px;
+}
+
+.p7 {
+  left: 10%;
+  top: 50%;
+  animation-delay: -7.5s;
+  animation-duration: 12s;
+  background: rgba(0, 255, 163, 0.4);
+}
+
+.p8 {
+  left: 88%;
+  top: 48%;
+  animation-delay: -0.8s;
+  animation-duration: 8.5s;
+}
+
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.18;
+  animation: ambient-float 8s ease-in-out infinite;
+}
+
+.glow-a {
+  width: 38vmin;
+  height: 38vmin;
+  background: rgba(0, 200, 255, 0.6);
+  left: 22%;
+  top: 18%;
+}
+
+.glow-b {
+  width: 34vmin;
+  height: 34vmin;
+  background: rgba(0, 255, 163, 0.55);
+  right: 22%;
+  bottom: 18%;
+  animation-delay: -3s;
+}
+
+.glow-c {
+  width: 24vmin;
+  height: 24vmin;
+  background: rgba(80, 120, 255, 0.4);
+  left: 50%;
+  top: 45%;
+  transform: translateX(-50%);
+  animation-delay: -5.5s;
+  animation-duration: 10s;
+  opacity: 0.12;
+}
+
+/* ─── Main Container ─── */
+.splash-center {
+  position: relative;
+  width: min(90vw, 560px);
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.ai-logo {
+  width: min(90vw, 500px);
+  height: auto;
+  filter: drop-shadow(0 0 24px rgba(0, 200, 255, 0.1));
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAYER 1 — Outer Arc (Synced Loading Ring)
+   ═══════════════════════════════════════════════════════ */
+.outer-arc-track {
+  fill: none;
+  stroke: rgba(0, 212, 161, 0.1);
+  stroke-width: 2.5;
+  stroke-dasharray: 1000;
+  /* Shows full arc as a dim track */
+  stroke-dashoffset: 0 !important;
+}
+
+.outer-arc-halo {
+  fill: none;
+  stroke: rgba(0, 212, 161, 0.25);
+  stroke-width: 12;
+  stroke-dasharray: 1000;
+  transition: stroke-dashoffset 80ms linear;
+  filter: url(#soft-glow);
+  opacity: 0.6;
+  animation: pulse-arc-halo 2.4s ease-in-out infinite;
+}
+
+.outer-arc-energy {
+  fill: none;
+  stroke: #00D4A1;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-dasharray: 1000;
+  transition: stroke-dashoffset 80ms linear;
+}
+
+.outer-arc-traveler {
+  fill: none;
+  stroke: #00ffea;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 30 970;
+  filter: url(#neon-blur);
+  animation: arc-travel 2.5s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAYER 2 — Orbital Circuit Rings (activate at 25%)
+   ═══════════════════════════════════════════════════════ */
+.orbit {
+  transform-origin: 250px 300px;
+}
+
+
+.orbit-path,
+.orbit-flow {
+  fill: none;
+  stroke-linecap: round;
+}
+
+/* Green orbit */
+.orbit-green {
+  animation: spin-ccw 18s linear infinite;
+}
+
+.orbit-green .orbit-path {
+  stroke: url(#ring-green);
+  stroke-width: 1.6;
+  opacity: 0.7;
+}
+
+.orbit-green .orbit-flow {
+  stroke: rgba(0, 255, 163, 0.75);
+  stroke-width: 2;
+  stroke-dasharray: 12 18;
+  filter: url(#neon-blur);
+  animation: flow-dash 2.4s linear infinite;
+}
+
+/* Blue orbit */
+.orbit-blue {
+  animation: spin-cw 14s linear infinite;
+}
+
+.orbit-blue .orbit-path {
+  stroke: url(#ring-blue);
+  stroke-width: 1.6;
+  opacity: 0.72;
+}
+
+.orbit-blue .orbit-flow {
+  stroke: rgba(0, 200, 255, 0.78);
+  stroke-width: 2;
+  stroke-dasharray: 10 18;
+  filter: url(#neon-blur);
+  animation: flow-dash 2s linear infinite reverse;
+}
+
+/* Orbit Nodes */
+.orbit .node {
+  stroke: none;
+  fill: #d7fbff;
+  filter: url(#neon-blur);
+  animation: node-pulse 2.8s ease-in-out infinite;
+}
+
+.orbit-green .node {
+  fill: #b0ffe0;
+}
+
+.orbit-blue .node {
+  fill: #b0e8ff;
+}
+
+.n1 {
+  animation-delay: 0s;
+}
+
+.n2 {
+  animation-delay: 0.18s;
+}
+
+.n3 {
+  animation-delay: 0.4s;
+}
+
+.n4 {
+  animation-delay: 0.6s;
+}
+
+.n5 {
+  animation-delay: 0.85s;
+}
+
+.b1 {
+  animation-delay: 0.25s;
+}
+
+.b2 {
+  animation-delay: 0.55s;
+}
+
+.b3 {
+  animation-delay: 0.85s;
+}
+
+.b4 {
+  animation-delay: 1.15s;
+}
+
+.b5 {
+  animation-delay: 1.5s;
+}
+
+/* Energy particles */
+.orbit-particle {
+  fill: white;
+  filter: url(#neon-blur);
+  opacity: 0;
+  animation: orbit-particle-flash 2s ease-in-out infinite;
+}
+
+.gp1 {
+  animation-delay: 0s;
+}
+
+.gp2 {
+  animation-delay: 0.7s;
+}
+
+.gp3 {
+  animation-delay: 1.4s;
+}
+
+.bp1 {
+  animation-delay: 0.3s;
+}
+
+.bp2 {
+  animation-delay: 1s;
+}
+
+.bp3 {
+  animation-delay: 1.7s;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAYER 3A — Soil Layer
+   ═══════════════════════════════════════════════════════ */
+.soil-shadow {
+  fill: rgba(30, 15, 5, 0.4);
+  filter: url(#soft-glow);
+}
+
+.soil-layer {
+  fill: url(#soil-brown);
+  opacity: 0.96;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  animation: soil-breath 3.6s ease-in-out infinite;
+}
+
+.soil-highlight {
+  fill: none;
+  stroke: rgba(255, 230, 200, 0.25);
+  stroke-width: 1;
+  animation: soil-breath 3.6s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAYER 3C — Root System (activates at 15%, fades in)
+   ═══════════════════════════════════════════════════════ */
+.root-system {
+  filter: drop-shadow(0 0 10px rgba(60, 200, 255, 0.2));
+  transition: opacity 0.6s ease-out;
+}
+
+.root-system.active .root-line,
+.root-system.active .root-link {
+  animation-play-state: running;
+}
+
+.root-bowl {
+  fill: none;
+  stroke: url(#root-blue);
+  stroke-width: 1.8;
+  opacity: 0.8;
+}
+
+.root-bowl-glow {
+  fill: none;
+  stroke: rgba(0, 200, 255, 0.3);
+  stroke-width: 6;
+  filter: url(#soft-glow);
+  opacity: 0.4;
+  animation: root-bowl-pulse 2.8s ease-in-out infinite;
+}
+
+.root-line {
+  fill: none;
+  stroke: rgba(80, 220, 255, 0.75);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 6;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  animation: root-stream 1.6s linear infinite;
+}
+
+.r1 {
+  animation-delay: 0s;
+}
+
+.r2 {
+  animation-delay: 0.15s;
+}
+
+.r3 {
+  animation-delay: 0.15s;
+}
+
+.r4 {
+  animation-delay: 0.3s;
+}
+
+.r5 {
+  animation-delay: 0.5s;
+}
+
+.r6 {
+  animation-delay: 0.65s;
+}
+
+.r7 {
+  animation-delay: 0.3s;
+}
+
+.r8 {
+  animation-delay: 0.5s;
+}
+
+.r9 {
+  animation-delay: 0.65s;
+}
+
+.root-link {
+  fill: none;
+  stroke: rgba(80, 200, 255, 0.45);
+  stroke-width: 0.9;
+  stroke-dasharray: 3 5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  animation: root-stream 2.2s linear infinite;
+}
+
+.lk1 {
+  animation-delay: 0.1s;
+}
+
+.lk2 {
+  animation-delay: 0.1s;
+}
+
+.lk3 {
+  animation-delay: 0.35s;
+}
+
+.lk4 {
+  animation-delay: 0.55s;
+}
+
+.lk5 {
+  animation-delay: 0.55s;
+}
+
+.lk6 {
+  animation-delay: 0.75s;
+}
+
+.root-node {
+  fill: #7ae8ff;
+  filter: url(#neon-blur);
+  animation: root-node-pulse 2.6s ease-in-out infinite;
+}
+
+.rn1 {
+  animation-delay: 0s;
+}
+
+.rn2 {
+  animation-delay: 0.8s;
+}
+
+.rn3 {
+  animation-delay: 0.2s;
+}
+
+.rn4 {
+  animation-delay: 0.5s;
+}
+
+.rn5 {
+  animation-delay: 0.7s;
+}
+
+.rn6 {
+  animation-delay: 0.2s;
+}
+
+.rn7 {
+  animation-delay: 0.5s;
+}
+
+.rn8 {
+  animation-delay: 0.7s;
+}
+
+.rn9 {
+  animation-delay: 0.9s;
+}
+
+.rn10 {
+  animation-delay: 0.9s;
+}
+
+.rn11 {
+  animation-delay: 0.6s;
+}
+
+.rn12 {
+  animation-delay: 0.6s;
+}
+
+.rn13 {
+  animation-delay: 0.85s;
+}
+
+.rn14 {
+  animation-delay: 0.85s;
+}
+
+.rn15 {
+  animation-delay: 1s;
+}
+
+.rn16 {
+  animation-delay: 0.4s;
+}
+
+.rn17 {
+  animation-delay: 0.4s;
+}
+
+.root-pulse {
+  fill: #adfbff;
+  opacity: 0;
+  filter: url(#neon-blur);
+  animation: pulse-up 2.2s ease-in-out infinite;
+}
+
+.p1 {
+  animation-delay: 0s;
+}
+
+.p2 {
+  animation-delay: 0.45s;
+}
+
+.p3 {
+  animation-delay: 0.45s;
+}
+
+.p4 {
+  animation-delay: 0.9s;
+}
+
+.p5 {
+  animation-delay: 0.9s;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAYER 3B — Sprout (synced with loading %)
+   ═══════════════════════════════════════════════════════ */
+.sprout-core {
+  transform-origin: 250px 294px;
+}
+
+.sprout-core.alive {
+  animation: sprout-idle 4s ease-in-out infinite;
+}
+
+.sprout-stem {
+  fill: none;
+  stroke: url(#stem-green);
+  stroke-width: 4.2;
+  stroke-linecap: round;
+  stroke-dasharray: 126;
+  /* stroke-dashoffset driven by [attr.stroke-dashoffset]="stemDashOffset" */
+  transition: stroke-dashoffset 80ms linear;
+  filter: drop-shadow(0 0 4px rgba(30, 200, 80, 0.3));
+}
+
+.leaf-left {
+  fill: url(#leaf-green);
+  transform-origin: 250px 249px;
+  transition: opacity 0.15s linear, transform 0.15s linear;
+  filter: drop-shadow(0 0 6px rgba(50, 220, 100, 0.25));
+}
+
+.leaf-right {
+  fill: url(#leaf-green);
+  transform-origin: 250px 242px;
+  transition: opacity 0.15s linear, transform 0.15s linear;
+  filter: drop-shadow(0 0 6px rgba(50, 220, 100, 0.25));
+}
+
+.leaf-vein {
+  fill: none;
+  stroke: rgba(200, 255, 220, 0.3);
+  stroke-width: 0.8;
+  stroke-linecap: round;
+  transition: opacity 0.5s ease-out;
+}
+
+.sprout-small-stem {
+  fill: none;
+  stroke: url(#stem-green);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-dasharray: 44;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 3px rgba(30, 200, 80, 0.2));
+}
+
+.leaf-small {
+  fill: url(#leaf-green);
+  transform-origin: 235px 289px;
+  transition: opacity 0.4s ease-out;
+  filter: drop-shadow(0 0 4px rgba(50, 220, 100, 0.2));
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAYER 4 — Brand Text + Progress Bar
+   ═══════════════════════════════════════════════════════ */
+.brand-wrap {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.brand-title {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-size: clamp(1rem, 2.1vw, 1.35rem);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12em;
+}
+
+.word {
+  background: linear-gradient(100deg,
+      rgba(200, 235, 255, 0.8) 30%,
+      #ffffff 50%,
+      rgba(200, 235, 255, 0.78) 70%);
+  background-size: 240% 100%;
+  background-position: 160% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: text-shimmer 5s ease-in-out infinite;
+}
+
+.word-right {
+  animation-delay: 0.3s;
+}
+
+.brand-leaf-o {
+  width: 0.95em;
+  height: 0.95em;
+  display: inline-block;
+  margin-top: 0.03em;
+  filter: drop-shadow(0 0 8px rgba(0, 212, 161, 0.5));
+  animation: leaf-o-breathe 3s ease-in-out infinite;
+}
+
+.brand-leaf-o path:first-child {
+  fill: #00D4A1;
+}
+
+.brand-leaf-o path:last-child {
+  fill: none;
+  stroke: rgba(200, 255, 230, 0.55);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00D4A1, #00d4ff, #00D4A1);
+  background-size: 200% 100%;
+  border-radius: 2px;
+  transition: width 80ms linear;
+  animation: progress-shimmer 2s linear infinite;
+  box-shadow: 0 0 8px rgba(0, 212, 161, 0.4);
+}
+
+.brand-subtitle {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Inter', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: rgba(180, 230, 255, 0.55);
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════
+   KEYFRAMES
+   ═══════════════════════════════════════════════════════ */
+
+@keyframes grid-drift {
+  from {
+    background-position: 0 0, 0 0;
+  }
+
+  to {
+    background-position: 48px 48px, 48px 48px;
+  }
+}
+
+@keyframes particle-float {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+
+  25% {
+    transform: translate(8px, -15px) scale(1.2);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: translate(-5px, -30px) scale(0.8);
+    opacity: 0.4;
+  }
+
+  75% {
+    transform: translate(12px, -18px) scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes ambient-float {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(0, -16px) scale(1.06);
+  }
+}
+
+/* Arc */
+@keyframes arc-travel {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+@keyframes pulse-arc-halo {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Orbits */
+@keyframes spin-cw {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-ccw {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes node-pulse {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes flow-dash {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -60;
+  }
+}
+
+@keyframes orbit-particle-flash {
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  30%,
+  70% {
+    opacity: 0.9;
+    transform: scale(1.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(2.2);
+  }
+}
+
+/* Root System */
+@keyframes root-stream {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -50;
+  }
+}
+
+@keyframes root-node-pulse {
+
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+}
+
+@keyframes root-bowl-pulse {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes pulse-up {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  15% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-55px);
+  }
+}
+
+/* Soil */
+@keyframes soil-breath {
+
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.94;
+  }
+
+  50% {
+    transform: translateY(-0.6px);
+    opacity: 1;
+  }
+}
+
+/* Sprout idle */
+@keyframes sprout-idle {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-1.2px) rotate(1deg);
+  }
+}
+
+/* Text */
+@keyframes text-shimmer {
+
+  0%,
+  62%,
+  100% {
+    background-position: 160% 0;
+  }
+
+  72%,
+  85% {
+    background-position: -20% 0;
+  }
+}
+
+@keyframes leaf-o-breathe {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes progress-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .splash-center {
+    gap: 10px;
+  }
+
+  .brand-title {
+    letter-spacing: 0.16em;
+  }
+
+  .brand-subtitle {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
+
+  .particle {
+    display: none;
+  }
+
+  .brand-wrap {
+    max-width: 260px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .splash-center {
+    width: 600px;
+  }
+
+  .ai-logo {
+    width: 540px;
+  }
+}

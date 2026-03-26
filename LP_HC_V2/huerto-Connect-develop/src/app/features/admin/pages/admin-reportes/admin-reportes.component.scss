@@ -1,0 +1,23 @@
+.panel {
+    border: 1px solid var(--admin-panel-border);
+    border-radius: 20px;
+    background: var(--admin-panel-bg);
+    backdrop-filter: blur(12px);
+    padding: 24px;
+    box-shadow: var(--admin-glass-shadow);
+}
+
+.head {
+    margin-bottom: 24px;
+}
+
+.head h2 {
+    color: var(--color-primary-dark);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.head small {
+    color: var(--color-secondary-dark);
+    font-weight: 500;
+}
