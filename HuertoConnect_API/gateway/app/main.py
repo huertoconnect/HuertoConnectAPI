@@ -90,7 +90,11 @@ app = FastAPI(
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_ORIGIN, "http://localhost:4200", "*"],
+    allow_origins=[
+        settings.FRONTEND_ORIGIN, 
+        "http://localhost:4200", 
+        "https://huertoconnectweb.netlify.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -283,7 +287,7 @@ async def gateway_health():
 
 @app.api_route(
     "/api/{path:path}",
-    methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     include_in_schema=False,
 )
 async def proxy(request: Request, path: str):
